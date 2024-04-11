@@ -25,7 +25,6 @@ class LexiLive extends InstanceBase {
 		Object.assign(this, { ...config, ...util })
 		this.pollTimer = {}
 		this.origin_field = `companion@${userinfo.username}:${hostname}`
-		console.log(this.origin_field)
 	}
 
 	logResponse(response) {
@@ -122,6 +121,9 @@ class LexiLive extends InstanceBase {
 		}
 		if (this.axios) {
 			delete this.axios
+		}
+		if (this.lexi) {
+			delete this.lexi
 		}
 	}
 
