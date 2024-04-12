@@ -5,8 +5,8 @@
 	"description": "Companion module for Lexi Live Captioning Service",
 	"version": "0.0.0",
 	"license": "MIT",
-	"repository": "git+https://github.com/phillipivan/companion-module-ai-media-lexi-live.git",
-	"bugs": "https://github.com/phillipivan/companion-module-ai-media-lexi-live/issues",
+	"repository": "git+https://github.com/bitfocus/companion-module-aimedia-lexilive.git",
+	"bugs": "https://github.com/bitfocus/companion-module-aimedia-lexilive/issues",
 	"maintainers": [
 		{
 			"name": "Phillip Ivan Pietruschka",

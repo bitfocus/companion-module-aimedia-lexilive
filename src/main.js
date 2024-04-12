@@ -7,6 +7,7 @@ const config = require('./config.js')
 const util = require('./util')
 const axios = require('axios')
 const os = require('os')
+import module_info from '../package.json' assert {type: 'json'}
 
 const hostname = os.hostname()
 const userinfo = os.userInfo()
@@ -24,7 +25,7 @@ class LexiLive extends InstanceBase {
 		super(internal)
 		Object.assign(this, { ...config, ...util })
 		this.pollTimer = {}
-		this.origin_field = `companion@${userinfo.username}:${hostname}`
+		this.origin_field = `companion_v${module_info.version}@${userinfo.username}:${hostname}`
 	}
 
 	logResponse(response) {
