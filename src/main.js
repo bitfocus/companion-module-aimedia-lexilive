@@ -74,7 +74,7 @@ class LexiLive extends InstanceBase {
 				timeout: api_timeOut,
 				headers: api_headers,
 				auth: {
-					username: this.config.username,
+					username: this.config.user,
 					password: this.config.password,
 				},
 		})
