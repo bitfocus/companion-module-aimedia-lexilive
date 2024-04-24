@@ -3,7 +3,7 @@ const { combineRgb } = require('@companion-module/base')
 module.exports = async function (self) {
     presets = {}
     self.lexi.instanceList.forEach((instance) => {
-    presets[`start_${instance.label}`] = {
+    presets[`start_${instance.id}`] = {
 	    type: 'button',
 	    category: 'Instance Control',
 	    name: `Start ${instance.label}`, 
@@ -43,7 +43,7 @@ module.exports = async function (self) {
 	        },
         ],
     }
-    presets[`stop_${instance.label}`] = {
+    presets[`stop_${instance.id}`] = {
 	    type: 'button',
 	    category: 'Instance Control',
 	    name: `Stop ${instance.label}`,
