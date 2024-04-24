@@ -52,7 +52,8 @@ module.exports = {
             this.updateActions() // export actions
             this.updateFeedbacks() // export feedback
             this.updateVariableDefinitions()
-            this.setVariableValues(this.lexi.instanceNames)
+			this.setVariableValues(this.lexi.instanceNames)
+			this.updatePresetsDefinitions()
         } else {
             return undefined
         }
