@@ -104,7 +104,7 @@ class LexiLive extends InstanceBase {
 		this.updateStatus(InstanceStatus.Connecting)
 		this.initLexi()
 		this.config = config
-		if (this.config.pass !== dummy_password) {
+		if (this.config.pass !== dummy_password && this.config.pass !== '') {
 			this.config.password = await this.parseVariablesInString(this.config.pass)
 			this.config.pass = dummy_password
 			this.saveConfig(this.config)
@@ -133,7 +133,7 @@ class LexiLive extends InstanceBase {
 		this.updateStatus(InstanceStatus.Connecting)
 		this.initLexi()
 		this.config = config
-		if (this.config.pass !== dummy_password) {
+		if (this.config.pass !== dummy_password && this.config.pass !== '') {
 			this.config.password = await this.parseVariablesInString(this.config.pass)
 			this.config.pass = dummy_password
 			this.saveConfig(this.config)
