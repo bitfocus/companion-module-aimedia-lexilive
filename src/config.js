@@ -11,7 +11,6 @@ module.exports = {
 				width: 4,
 				regex: Regex.SOMETHING,
 				default: '',
-                useVariables: true,
 			},
 			{
 				type: 'textinput',
@@ -20,7 +19,6 @@ module.exports = {
 				width: 4,
 				regex: Regex.SOMETHING,
 				default: '',
-                useVariables: true,
 			},
 			{
 				type: 'checkbox',
@@ -28,7 +26,7 @@ module.exports = {
 				label: 'Verbose Logging',
 				width: 2,
 				default: false,
-				tooltip: 'Verbose logs written to the console. Logs will include authentication details',
+				tooltip: 'Verbose logs written to the console. Logs include user credentials',
 			},
 		]
 	},

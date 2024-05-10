@@ -1,6 +1,6 @@
 {
 	"name": "ai-media-lexi-live",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"main": "src/main.js",
 	"scripts": {
 		"format": "prettier -w .",
@@ -12,7 +12,7 @@
 		"url": "git+https://github.com/bitfocus/companion-module-aimedia-lexilive.git"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.7.0",
+		"@companion-module/base": "~1.8.0",
 		"axios": "^1.6.8"
 	},
 	"devDependencies": {
