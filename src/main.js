@@ -47,8 +47,11 @@ class LexiLive extends InstanceBase {
 			console.log(error)
 		}
 		if (error.code !== undefined) {
-			this.log('error', `Error: ${JSON.stringify(error.code)}`)
-			this.updateStatus(InstanceStatus.ConnectionFailure, JSON.stringify(error.code))
+			this.log(
+				'error',
+				`${error.response.status}: ${JSON.stringify(error.code)}\n${JSON.stringify(error.response.data)}`
+			)
+			this.updateStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
 		} else {
 			this.log('error', `No error code`)
 			this.updateStatus(InstanceStatus.UnknownError)
