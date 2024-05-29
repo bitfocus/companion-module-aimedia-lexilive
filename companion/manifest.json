@@ -1,6 +1,6 @@
 {
-	"id": "ai-media-lexi-live",
-	"name": "ai-media-lexi-live",
+	"id": "aimedia-lexilive",
+	"name": "aimedia-lexilive",
 	"shortname": "Lexi-Live",
 	"description": "Companion module for Lexi Live Captioning Service",
 	"version": "0.0.0",
@@ -19,7 +19,7 @@
 		"apiVersion": "0.0.0",
 		"entrypoint": "../main.js"
 	},
-	"legacyIds": [],
+	"legacyIds": ["ai-media-lexi-live"],
 	"manufacturer": "AI Media",
 	"products": ["Lexi Live"],
 	"keywords": ["Closed Captioning"]
