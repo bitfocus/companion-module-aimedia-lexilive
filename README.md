@@ -1,3 +1,3 @@
-# companion-module-ai-media-lexi-live
+# companion-module-aimedia-lexilive
 
 See [HELP.md](./companion/HELP.md) and [LICENSE](./LICENSE)
