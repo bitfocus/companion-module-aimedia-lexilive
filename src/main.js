@@ -1,14 +1,14 @@
-const { InstanceBase, Regex, runEntrypoint, InstanceStatus } = require('@companion-module/base')
-const UpgradeScripts = require('./upgrades')
-const UpdateActions = require('./actions')
-const UpdateFeedbacks = require('./feedbacks')
-const UpdateVariableDefinitions = require('./variables')
-const UpdatePresetsDefinitions = require('./presets')
-const config = require('./config.js')
-const util = require('./util')
-const axios = require('axios')
-const os = require('os')
-import module_info from '../package.json' assert {type: 'json'}
+import { InstanceBase, runEntrypoint, InstanceStatus } from '@companion-module/base'
+import UpgradeScripts from './upgrades.js'
+import UpdateActions from './actions.js'
+import UpdateFeedbacks from './feedbacks.js'
+import UpdateVariableDefinitions from './variables.js'
+import UpdatePresetsDefinitions from './presets.js'
+import * as config from './config.js'
+import * as util from './util.js'
+import axios from 'axios'
+import os from 'os'
+import module_info from '../package.json' assert { type: 'json' }
 
 const hostname = os.hostname()
 const userinfo = os.userInfo()
@@ -52,7 +52,15 @@ class LexiLive extends InstanceBase {
 					'error',
 					`${error.response.status}: ${JSON.stringify(error.code)}\n${JSON.stringify(error.response.data)}`
 				)
-				this.updateStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
+				if (error.response.data.error === 'Authentication Failed') {
+					this.updateStatus(InstanceStatus.AuthenticationFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
+					if (this.pollTimer) {
+						clearTimeout(this.pollTimer)
+						delete this.pollTimer
+					}
+				} else {
+					this.updateStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
+				}
 			} catch {
 				this.log('error', `${JSON.stringify(error.code)}\n${JSON.stringify(error)}`)
 				this.updateStatus(InstanceStatus.ConnectionFailure, `${JSON.stringify(error.code)}`)
@@ -86,10 +94,10 @@ class LexiLive extends InstanceBase {
 					username: this.config.user,
 					password: this.config.password,
 				},
-		})
-		this.getEngines()
-		this.updateInstanceList()
-		this.pollStatus()
+			})
+			this.getEngines()
+			this.updateInstanceList()
+			this.pollStatus()
 		} else {
 			this.log('warn', `Username / Password undefined`)
 			this.updateStatus(InstanceStatus.BadConfig)

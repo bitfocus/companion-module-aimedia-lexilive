@@ -1,15 +1,14 @@
-const { Regex } = require("@companion-module/base")
+import { Regex } from '@companion-module/base'
 
-module.exports = function (self) {
+export default function (self) {
 	self.setActionDefinitions({
 		instanceList: {
 			name: 'Update Instance List',
-			options: [
-			],
-			callback: async (event) => {
+			options: [],
+			callback: async () => {
 				self.updateInstanceList()
 			},
-			subscribe: async (event) => {
+			subscribe: async () => {
 				self.updateInstanceList()
 			},
 		},
@@ -49,7 +48,7 @@ module.exports = function (self) {
 					],
 				},
 			],
-			callback: async ({options}) => {
+			callback: async ({ options }) => {
 				if (self.axios === undefined) {
 					return undefined
 				}
@@ -61,7 +60,10 @@ module.exports = function (self) {
 					return undefined
 				}
 				try {
-					const response = await self.axios.post(`/live/v2/instances/${instance}/turn_on`, JSON.stringify({ initialization_origin: origin, initialization_reason: reason }))
+					const response = await self.axios.post(
+						`/live/v2/instances/${instance}/turn_on`,
+						JSON.stringify({ initialization_origin: origin, initialization_reason: reason })
+					)
 					self.logResponse(response)
 				} catch (error) {
 					self.logError(error)
@@ -105,7 +107,7 @@ module.exports = function (self) {
 					],
 				},
 			],
-			callback: async ({options}) => {
+			callback: async ({ options }) => {
 				if (self.axios === undefined) {
 					return undefined
 				}
@@ -117,12 +119,15 @@ module.exports = function (self) {
 					return undefined
 				}
 				try {
-					const response = await self.axios.post(`/live/v2/instances/${instance}/turn_off`, JSON.stringify({ termination_origin: origin, termination_reason: reason }))
+					const response = await self.axios.post(
+						`/live/v2/instances/${instance}/turn_off`,
+						JSON.stringify({ termination_origin: origin, termination_reason: reason })
+					)
 					self.logResponse(response)
 				} catch (error) {
 					self.logError(error)
 				}
 			},
-		}
+		},
 	})
 }
