@@ -1,3 +1,3 @@
-module.exports = async function (self) {
+export default async function (self) {
 	self.setVariableDefinitions(self.lexi.instanceVariables)
 }
