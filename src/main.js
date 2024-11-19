@@ -117,19 +117,9 @@ class LexiLive extends InstanceBase {
 	}
 
 	async init(config) {
-		this.updateStatus(InstanceStatus.Connecting)
-		this.initLexi()
-		this.config = config
-		if (this.config.pass !== dummy_password && this.config.pass !== '') {
-			this.config.password = await this.parseVariablesInString(this.config.pass)
-			this.config.pass = dummy_password
-			this.saveConfig(this.config)
-		}
-		this.setupAxios()
-		this.updateActions() // export actions
-		this.updateFeedbacks() // export feedbacks
-		this.updateVariableDefinitions() // export variable definitions
+		await this.configUpdated(config)
 	}
+
 	// When module gets deleted
 	async destroy() {
 		this.log('debug', 'destroy')
