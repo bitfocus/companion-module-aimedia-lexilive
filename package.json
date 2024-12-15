@@ -1,11 +1,13 @@
 {
 	"name": "aimedia-lexilive",
-	"version": "1.1.5",
+	"version": "1.1.6",
 	"main": "src/main.js",
 	"type": "module",
 	"scripts": {
 		"format": "prettier -w .",
-		"package": "companion-module-build"
+		"package": "companion-module-build",
+		"lint:raw": "eslint",
+		"lint": "yarn lint:raw ."
 	},
 	"license": "MIT",
 	"repository": {
@@ -13,11 +15,18 @@
 		"url": "git+https://github.com/bitfocus/companion-module-aimedia-lexilive.git"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.10.0",
-		"axios": "^1.7.5"
+		"@companion-module/base": "~1.11.2",
+		"axios": "^1.7.9",
+		"p-queue": "^8.0.1"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^1.5.1"
+		"@companion-module/tools": "^2.1.0",
+		"eslint": "^9.17.0",
+		"prettier": "^3.4.2"
 	},
-	"prettier": "@companion-module/tools/.prettierrc.json"
+	"engines": {
+		"node": "^22.12"
+	},
+	"prettier": "@companion-module/tools/.prettierrc.json",
+	"packageManager": "yarn@4.5.3"
 }

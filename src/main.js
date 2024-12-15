@@ -9,6 +9,7 @@ import * as util from './util.js'
 import axios from 'axios'
 import os from 'os'
 import module_info from '../package.json' assert { type: 'json' }
+import PQueue from 'p-queue'
 
 const hostname = os.hostname()
 const userinfo = os.userInfo()
@@ -27,6 +28,7 @@ class LexiLive extends InstanceBase {
 		Object.assign(this, { ...config, ...util })
 		this.pollTimer = {}
 		this.origin_field = `companion_v${module_info.version}@${userinfo.username}:${hostname}`
+		this.queue = new PQueue({ concurrency: 1, interval: 100, intervalCap: 1 })
 	}
 
 	logResponse(response) {
@@ -50,10 +52,13 @@ class LexiLive extends InstanceBase {
 			try {
 				this.log(
 					'error',
-					`${error.response.status}: ${JSON.stringify(error.code)}\n${JSON.stringify(error.response.data)}`
+					`${error.response.status}: ${JSON.stringify(error.code)}\n${JSON.stringify(error.response.data)}`,
 				)
 				if (error.response.data.error === 'Authentication Failed') {
-					this.updateStatus(InstanceStatus.AuthenticationFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
+					this.updateStatus(
+						InstanceStatus.AuthenticationFailure,
+						`${error.response.status}: ${JSON.stringify(error.code)}`,
+					)
 					if (this.pollTimer) {
 						clearTimeout(this.pollTimer)
 						delete this.pollTimer
@@ -72,7 +77,11 @@ class LexiLive extends InstanceBase {
 	}
 
 	pollStatus() {
-		this.getInstances()
+		this.queue
+			.add(async () => {
+				this.getInstances()
+			})
+			.catch(() => {})
 		this.pollTimer = setTimeout(() => {
 			this.pollStatus()
 		}, pollInterval)
@@ -95,8 +104,16 @@ class LexiLive extends InstanceBase {
 					password: this.config.password,
 				},
 			})
-			this.getEngines()
-			this.updateInstanceList()
+			this.queue
+				.add(async () => {
+					this.getEngines()
+				})
+				.catch(() => {})
+			this.queue
+				.add(async () => {
+					this.updateInstanceList()
+				})
+				.catch(() => {})
 			this.pollStatus()
 		} else {
 			this.log('warn', `Username / Password undefined`)
@@ -127,6 +144,7 @@ class LexiLive extends InstanceBase {
 			clearTimeout(this.pollTimer)
 			delete this.pollTimer
 		}
+		this.queue.clear()
 		if (this.axios) {
 			delete this.axios
 		}
@@ -137,6 +155,7 @@ class LexiLive extends InstanceBase {
 
 	async configUpdated(config) {
 		this.updateStatus(InstanceStatus.Connecting)
+		this.queue.clear()
 		this.initLexi()
 		this.config = config
 		if (this.config.pass !== dummy_password && this.config.pass !== '') {
