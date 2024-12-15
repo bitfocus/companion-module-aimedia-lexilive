@@ -6,10 +6,14 @@ export default function (self) {
 			name: 'Update Instance List',
 			options: [],
 			callback: async () => {
-				self.updateInstanceList()
+				await this.queue.add(async () => {
+					self.updateInstanceList()
+				})
 			},
 			subscribe: async () => {
-				self.updateInstanceList()
+				await this.queue.add(async () => {
+					self.updateInstanceList()
+				})
 			},
 		},
 		instanceStart: {
@@ -59,15 +63,17 @@ export default function (self) {
 					self.log('warn', 'No instance provided to Instance Start')
 					return undefined
 				}
-				try {
-					const response = await self.axios.post(
-						`/live/v2/instances/${instance}/turn_on`,
-						JSON.stringify({ initialization_origin: origin, initialization_reason: reason })
-					)
-					self.logResponse(response)
-				} catch (error) {
-					self.logError(error)
-				}
+				await self.queue.add(async () => {
+					try {
+						const response = await self.axios.post(
+							`/live/v2/instances/${instance}/turn_on`,
+							JSON.stringify({ initialization_origin: origin, initialization_reason: reason }),
+						)
+						self.logResponse(response)
+					} catch (error) {
+						self.logError(error)
+					}
+				})
 			},
 		},
 		instanceStop: {
@@ -118,15 +124,17 @@ export default function (self) {
 					self.log('warn', 'No instance provided to Instance Stop')
 					return undefined
 				}
-				try {
-					const response = await self.axios.post(
-						`/live/v2/instances/${instance}/turn_off`,
-						JSON.stringify({ termination_origin: origin, termination_reason: reason })
-					)
-					self.logResponse(response)
-				} catch (error) {
-					self.logError(error)
-				}
+				await self.queue.add(async () => {
+					try {
+						const response = await self.axios.post(
+							`/live/v2/instances/${instance}/turn_off`,
+							JSON.stringify({ termination_origin: origin, termination_reason: reason }),
+						)
+						self.logResponse(response)
+					} catch (error) {
+						self.logError(error)
+					}
+				})
 			},
 		},
 	})
