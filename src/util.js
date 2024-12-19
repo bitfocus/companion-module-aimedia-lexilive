@@ -3,7 +3,9 @@ export async function getEngines() {
 		return undefined
 	}
 	try {
-		const response = await this.axios.get('/live/v1/engines')
+		const response = await this.queue.add(async () => {
+			return await this.axios.get('/live/v1/engines')
+		})
 		this.logResponse(response)
 		if (response.data === undefined) {
 			this.log('warn', 'getEngines response contains no data')
@@ -20,7 +22,9 @@ export async function getInstances() {
 		return undefined
 	}
 	try {
-		const response = await this.axios.get('/live/v2/instances')
+		const response = await this.queue.add(async () => {
+			return await this.axios.get('/live/v2/instances')
+		})
 		this.logResponse(response)
 		if (response.data === undefined) {
 			this.log('warn', 'getInstances response contains no data')
@@ -49,7 +53,7 @@ export async function getInstances() {
 }
 
 export async function updateInstanceList() {
-	let instanceList = await this.getInstances()
+	const instanceList = await this.getInstances()
 	if (instanceList) {
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedback
@@ -66,7 +70,9 @@ export async function getInstance(instance_id) {
 		return undefined
 	}
 	try {
-		const response = await this.axios.get(`/live/v2/instances/${instance_id}`)
+		const response = await this.queue.add(async () => {
+			return await this.axios.get(`/live/v2/instances/${instance_id}`)
+		})
 		this.logResponse(response)
 		if (response.data === undefined) {
 			this.log('warn', `getInstance/${instance_id} response contains no data`)

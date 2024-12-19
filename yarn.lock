@@ -22,20 +22,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@companion-module/tools@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@companion-module/tools@npm:2.1.0"
+"@companion-module/tools@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@companion-module/tools@npm:2.1.1"
   dependencies:
-    "@eslint/js": "npm:^9.10.0"
+    "@eslint/js": "npm:^9.17.0"
     eslint-config-prettier: "npm:^9.1.0"
-    eslint-plugin-n: "npm:^17.10.2"
+    eslint-plugin-n: "npm:^17.15.0"
     eslint-plugin-prettier: "npm:^5.2.1"
     find-up: "npm:^7.0.0"
     parse-author: "npm:^2.0.0"
     tar: "npm:^7.4.3"
-    webpack: "npm:^5.94.0"
+    webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
-    zx: "npm:^8.1.6"
+    zx: "npm:^8.2.4"
   peerDependencies:
     "@companion-module/base": ^1.11.0
     eslint: ^9.0.0
@@ -52,7 +52,7 @@ __metadata:
     companion-generate-manifest: scripts/generate-manifest.js
     companion-module-build: scripts/build.js
     companion-module-check: scripts/check.js
-  checksum: 10c0/a0ea5e762a4ce66088446c8feba10ddd92c3c5cb810c9709c70a60ec67ecf254b7814c3ca4bacc228fba7181018dd84c5d3343203cea7eaa0b475d94dd67e180
+  checksum: 10c0/d4b5f76f46315fa8bedafc63aa7011986374bd6f96faab2e9726fc8ced8e98835c4b5b6ee5f2e940e46d9a803082b0948bcd84e5c1e5f7eb92f89d1cb155e98a
   languageName: node
   linkType: hard
 
@@ -129,7 +129,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.17.0, @eslint/js@npm:^9.10.0":
+"@eslint/js@npm:9.17.0, @eslint/js@npm:^9.17.0":
   version: 9.17.0
   resolution: "@eslint/js@npm:9.17.0"
   checksum: 10c0/a0fda8657a01c60aa540f95397754267ba640ffb126e011b97fd65c322a94969d161beeaef57c1441c495da2f31167c34bd38209f7c146c7225072378c3a933d
@@ -580,7 +580,7 @@ __metadata:
   resolution: "aimedia-lexilive@workspace:."
   dependencies:
     "@companion-module/base": "npm:~1.11.2"
-    "@companion-module/tools": "npm:^2.1.0"
+    "@companion-module/tools": "npm:^2.1.1"
     axios: "npm:^1.7.9"
     eslint: "npm:^9.17.0"
     p-queue: "npm:^8.0.1"
@@ -986,7 +986,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-n@npm:^17.10.2":
+"eslint-plugin-n@npm:^17.15.0":
   version: 17.15.0
   resolution: "eslint-plugin-n@npm:17.15.0"
   dependencies:
@@ -2461,7 +2461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.94.0":
+"webpack@npm:^5.97.1":
   version: 5.97.1
   resolution: "webpack@npm:5.97.1"
   dependencies:
@@ -2572,7 +2572,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zx@npm:^8.1.6":
+"zx@npm:^8.2.4":
   version: 8.2.4
   resolution: "zx@npm:8.2.4"
   dependencies:
