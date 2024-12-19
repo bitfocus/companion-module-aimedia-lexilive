@@ -28,7 +28,16 @@ class LexiLive extends InstanceBase {
 		Object.assign(this, { ...config, ...util })
 		this.pollTimer = {}
 		this.origin_field = `companion_v${module_info.version}@${userinfo.username}:${hostname}`
+		this.currentStatus = { status: InstanceStatus.Disconnected, message: '' }
 		this.queue = new PQueue({ concurrency: 1, interval: 100, intervalCap: 1 })
+	}
+
+	checkStatus(status = InstanceStatus.Disconnected, message = '') {
+		if (status === this.currentStatus.status && message === this.currentStatus.message) return false
+		this.updateStatus(status, message.toString())
+		this.currentStatus.status = status
+		this.currentStatus.message = message
+		return true
 	}
 
 	logResponse(response) {
@@ -36,10 +45,10 @@ class LexiLive extends InstanceBase {
 			console.log(response)
 		}
 		if (response.data !== undefined) {
-			this.updateStatus(InstanceStatus.Ok)
+			this.checkStatus(InstanceStatus.Ok)
 			this.log('debug', `Data Recieved: ${JSON.stringify(response.data)}`)
 		} else {
-			this.updateStatus(InstanceStatus.UnknownWarning, 'No Data')
+			this.checkStatus(InstanceStatus.UnknownWarning, 'No Data')
 			this.log('warn', `Response contains no data`)
 		}
 	}
@@ -55,7 +64,7 @@ class LexiLive extends InstanceBase {
 					`${error.response.status}: ${JSON.stringify(error.code)}\n${JSON.stringify(error.response.data)}`,
 				)
 				if (error.response.data.error === 'Authentication Failed') {
-					this.updateStatus(
+					this.checkStatus(
 						InstanceStatus.AuthenticationFailure,
 						`${error.response.status}: ${JSON.stringify(error.code)}`,
 					)
@@ -64,15 +73,15 @@ class LexiLive extends InstanceBase {
 						delete this.pollTimer
 					}
 				} else {
-					this.updateStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
+					this.checkStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
 				}
 			} catch {
 				this.log('error', `${JSON.stringify(error.code)}\n${JSON.stringify(error)}`)
-				this.updateStatus(InstanceStatus.ConnectionFailure, `${JSON.stringify(error.code)}`)
+				this.checkStatus(InstanceStatus.ConnectionFailure, `${JSON.stringify(error.code)}`)
 			}
 		} else {
 			this.log('error', `No error code`)
-			this.updateStatus(InstanceStatus.UnknownError)
+			this.checkStatus(InstanceStatus.UnknownError)
 		}
 	}
 
@@ -117,7 +126,7 @@ class LexiLive extends InstanceBase {
 			this.pollStatus()
 		} else {
 			this.log('warn', `Username / Password undefined`)
-			this.updateStatus(InstanceStatus.BadConfig)
+			this.checkStatus(InstanceStatus.BadConfig)
 		}
 	}
 
@@ -154,7 +163,7 @@ class LexiLive extends InstanceBase {
 	}
 
 	async configUpdated(config) {
-		this.updateStatus(InstanceStatus.Connecting)
+		this.checkStatus(InstanceStatus.Connecting)
 		this.queue.clear()
 		this.initLexi()
 		this.config = config
