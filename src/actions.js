@@ -25,7 +25,6 @@ export default function (self) {
 					label: 'Instance',
 					default: '',
 					choices: self.lexi.instanceList,
-					useVariables: true,
 					allowCustom: true,
 					tooltip: 'Varible must return an instance id',
 				},
@@ -34,7 +33,7 @@ export default function (self) {
 					type: 'textinput',
 					label: 'Initialization Origin',
 					default: self.origin_field,
-					useVariables: true,
+					useVariables: { local: true },
 					required: false,
 					tooltip: 'Appears in Lexi Logs',
 				},
@@ -43,7 +42,6 @@ export default function (self) {
 					type: 'dropdown',
 					label: 'Initialization Reason',
 					default: 'User initialized',
-					useVariables: true,
 					allowCustom: true,
 					tooltip: 'Appears in Lexi Logs',
 					choices: [
@@ -52,13 +50,13 @@ export default function (self) {
 					],
 				},
 			],
-			callback: async ({ options }) => {
+			callback: async ({ options }, context) => {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				let instance = await self.parseVariablesInString(options.instance)
-				let origin = await self.parseVariablesInString(options.init_origin)
-				let reason = await self.parseVariablesInString(options.init_reason)
+				let instance = await context.parseVariablesInString(options.instance)
+				let origin = await context.parseVariablesInString(options.init_origin)
+				let reason = await context.parseVariablesInString(options.init_reason)
 				if (instance === undefined) {
 					self.log('warn', 'No instance provided to Instance Start')
 					return undefined
@@ -85,7 +83,6 @@ export default function (self) {
 					label: 'Instance',
 					default: '',
 					choices: self.lexi.instanceList,
-					useVariables: true,
 					allowCustom: true,
 					regex: Regex.SOMETHING,
 					tooltip: 'Varible must return an instance id',
@@ -95,7 +92,7 @@ export default function (self) {
 					type: 'textinput',
 					label: 'Termination Origin',
 					default: self.origin_field,
-					useVariables: true,
+					useVariables: { local: true },
 					required: false,
 					tooltip: 'Appears in Lexi Logs',
 				},
@@ -104,7 +101,6 @@ export default function (self) {
 					type: 'dropdown',
 					label: 'Termination Reason',
 					default: 'User initialized',
-					useVariables: true,
 					allowCustom: true,
 					tooltip: 'Appears in Lexi Logs',
 					choices: [
@@ -113,13 +109,13 @@ export default function (self) {
 					],
 				},
 			],
-			callback: async ({ options }) => {
+			callback: async ({ options }, context) => {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				let instance = await self.parseVariablesInString(options.instance)
-				let origin = await self.parseVariablesInString(options.term_origin)
-				let reason = await self.parseVariablesInString(options.term_reason)
+				let instance = await context.parseVariablesInString(options.instance)
+				let origin = await context.parseVariablesInString(options.term_origin)
+				let reason = await context.parseVariablesInString(options.term_reason)
 				if (instance === undefined) {
 					self.log('warn', 'No instance provided to Instance Stop')
 					return undefined

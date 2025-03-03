@@ -17,7 +17,6 @@ export default async function (self) {
 					label: 'Instance',
 					default: '',
 					choices: self.lexi.instanceList,
-					useVariables: true,
 					allowCustom: true,
 					tooltip: 'Varible must return an instance id',
 				},
@@ -26,7 +25,6 @@ export default async function (self) {
 					type: 'dropdown',
 					label: 'State',
 					default: 'ON',
-					useVariables: true,
 					allowCustom: true,
 					choices: [
 						{ id: 'OFF', label: 'OFF' },
