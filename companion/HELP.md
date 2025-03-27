@@ -6,7 +6,7 @@ User credentials stored in the config are not secure.
 
 ### Actions
 
-Start and stop Lexi Live instances.
+Start, stop and modify Lexi Live instances.
 
 The origin and reason fields are written to the Lexi Live logs. The default origin is companion_v(Module Version Number)@(User):(Host).
 
@@ -21,6 +21,10 @@ Instance Names
 Instance State (Off/On)
 
 ## Version History
+
+### Version 1.2.0
+- Modify Instance action
+- Parse local variables
 
 ### Version 1.1.6
 

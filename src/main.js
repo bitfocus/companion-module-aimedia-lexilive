@@ -115,11 +115,6 @@ class LexiLive extends InstanceBase {
 			})
 			this.queue
 				.add(async () => {
-					this.getEngines()
-				})
-				.catch(() => {})
-			this.queue
-				.add(async () => {
 					this.updateInstanceList()
 				})
 				.catch(() => {})
@@ -139,11 +134,14 @@ class LexiLive extends InstanceBase {
 			instanceState: [],
 			instanceVariables: [],
 			instanceNames: [],
+			baseModels: [],
+			customModels: [],
+			engines: [],
 		}
 	}
 
 	async init(config) {
-		await this.configUpdated(config)
+		this.configUpdated(config).catch(()=>{})
 	}
 
 	// When module gets deleted

@@ -17,6 +17,47 @@ export async function getEngines() {
 		return undefined
 	}
 }
+
+export async function getBaseModels() {
+	if (this.axios === undefined) {
+		return undefined
+	}
+	try {
+		const response = await this.queue.add(async () => {
+			return await this.axios.get('/base_models')
+		})
+		this.logResponse(response)
+		if (response.data === undefined) {
+			this.log('warn', 'getBaseModels response contains no data')
+			return undefined
+		}
+		return response.data
+	} catch (error) {
+		this.logError(error)
+		return undefined
+	}
+}
+
+export async function getCustomModels() {
+	if (this.axios === undefined) {
+		return undefined
+	}
+	try {
+		const response = await this.queue.add(async () => {
+			return await this.axios.get('/models/v3')
+		})
+		this.logResponse(response)
+		if (response.data === undefined) {
+			this.log('warn', 'getCustomModels response contains no data')
+			return undefined
+		}
+		return response.data
+	} catch (error) {
+		this.logError(error)
+		return undefined
+	}
+}
+
 export async function getInstances() {
 	if (this.axios === undefined) {
 		return undefined
@@ -54,6 +95,9 @@ export async function getInstances() {
 
 export async function updateInstanceList() {
 	const instanceList = await this.getInstances()
+	await this.getEngines()
+	await this.getBaseModels()
+	await this.getCustomModels()
 	if (instanceList) {
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedback
