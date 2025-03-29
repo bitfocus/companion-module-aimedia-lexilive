@@ -624,17 +624,27 @@ export default function (self) {
 				}
 				if (options.parameters.includes('engine')) {
 					const engine = await context.parseVariablesInString(options.engine)
-					if (engine !== 'No available engines' && engine !== '') params.engine = engine
+					if (engine !== 'No available engines' && engine !== '') {
+						params.engine = engine
+					} else {
+						self.log('warn', `Invalid engine: ${engine}`)
+					}
 				}
 				if (options.parameters.includes('base_model')) {
 					const base_model = await context.parseVariablesInString(options.base_model)
-					if (base_model !== 'No available language models' && base_model !== '') params.base_model = base_model
+					if (base_model !== 'No available language models' && base_model !== '') {
+						params.base_model = base_model
+					} else {
+						self.log('warn', `Invalid base_model: ${base_model}`)
+					}
 				}
 				if (options.parameters.includes('custom_model')) {
 					const custom_model = await context.parseVariablesInString(options.custom_model)
 					if (custom_model !== 'No available custom models' && custom_model !== '') {
 						params.custom_model = custom_model
 						params.custom_models = [custom_model]
+					} else {
+						self.log('warn', `Invalid custom_model: ${custom_model}`)
 					}
 				}
 				if (options.parameters.includes('diarization_style')) {
@@ -654,14 +664,22 @@ export default function (self) {
 				}
 				if (options.parameters.includes('cc_service')) {
 					const cc_service = parseInt(await context.parseVariablesInString(options.cc_service))
-					if (cc_service >= 1 && cc_service <= 6) params.cc_service = cc_service.toString()
+					if (cc_service >= 1 && cc_service <= 6) {
+						params.cc_service = cc_service.toString()
+					} else {
+						self.log('warn', `Invalid cc_service value: ${cc_service}`)
+					}
 				}
 				if (options.parameters.includes('use_newfor')) {
 					params.use_newfor = options.use_newfor
 				}
 				if (options.parameters.includes('teletext_page')) {
 					const page = await context.parseVariablesInString(options.teletext_page)
-					if (page.length === 3) params.teletext_page = page
+					if (page.length === 3) {
+						params.teletext_page = page
+					} else {
+						self.log('warn', `Invalid page valid, must have a length of 3: ${page}. Length: ${page.length}`)
+					}
 				}
 				if (options.parameters.includes('display_style')) {
 					params.display_style = options.display_style
@@ -707,7 +725,11 @@ export default function (self) {
 				}
 				if (options.parameters.includes('max_delay')) {
 					const delay = parseFloat(await context.parseVariablesInString(options.max_delay)).toFixed(1)
-					if (!isNaN(delay) && delay >= 0.7 && delay <= 10) params.max_delay = delay.toString()
+					if (!isNaN(delay) && delay >= 0.7 && delay <= 10) {
+						params.max_delay = delay.toString()
+					} else {
+						self.log('warn', `Invalid delay value, must be between 0.7 and 10. Value: ${delay}`)
+					}
 				}
 				if (Object.keys(params).length === 0) return
 				await self.queue.add(async () => {
