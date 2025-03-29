@@ -126,39 +126,13 @@ export async function getInstances() {
 }
 
 export async function updateInstanceList() {
-	const instanceList = await this.getInstances()
+	await this.getInstances()
 	await this.getEngines()
 	await this.getBaseModels()
 	await this.getCustomModels()
-	if (instanceList) {
-		this.updateActions() // export actions
-		this.updateFeedbacks() // export feedback
-		this.updateVariableDefinitions()
-		this.setVariableValues(this.lexi.instanceNames)
-		this.updatePresetsDefinitions()
-	} else {
-		return undefined
-	}
-}
-
-export async function getInstance(instance_id) {
-	if (this.axios === undefined || instance_id === undefined) {
-		return undefined
-	}
-	try {
-		const response = await this.queue.add(async () => {
-			return await this.axios.get(`/live/v2/instances/${instance_id}`)
-		})
-		this.logResponse(response)
-		if (response.data === undefined) {
-			this.log('warn', `getInstance/${instance_id} response contains no data`)
-			return undefined
-		}
-		this.lexi.instanceState[response.data.instance.instance_id] = response.data.instance.state
-		this.checkFeedbacks()
-		return response.data
-	} catch (error) {
-		this.logError(error)
-		return undefined
-	}
+	this.updateActions() // export actions
+	this.updateFeedbacks() // export feedback
+	this.updateVariableDefinitions()
+	this.setVariableValues(this.lexi.instanceNames)
+	this.updatePresetsDefinitions()
 }

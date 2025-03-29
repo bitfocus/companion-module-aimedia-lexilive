@@ -13,14 +13,10 @@ export default function (self) {
 				},
 			],
 			callback: async () => {
-				await self.queue.add(async () => {
-					self.updateInstanceList()
-				})
+				await self.updateInstanceList()
 			},
 			subscribe: async () => {
-				await self.queue.add(async () => {
-					self.updateInstanceList()
-				})
+				await self.updateInstanceList()
 			},
 		},
 		instanceStart: {
@@ -151,7 +147,13 @@ export default function (self) {
 					choices: self.lexi?.instanceList ?? [],
 					allowCustom: true,
 					regex: Regex.SOMETHING,
-					tooltip: 'Varible must return an instance id. Instance must not be running.',
+					tooltip: 'Varible must return an instance id.',
+				},
+				{
+					id: 'important-line',
+					type: 'static-text',
+					label: 'Note',
+					value: 'Instance can not be modified while active.',
 				},
 				{
 					id: 'parameters',
@@ -159,33 +161,33 @@ export default function (self) {
 					label: 'Parameters',
 					default: [],
 					choices: [
-						{ id: 'lexiName', label: 'Name' },
-						{ id: 'engine', label: 'Engine' },
-						{ id: 'base_model', label: 'Base Model' },
-						{ id: 'custom_model', label: 'Custom Model' },
-						{ id: 'diarization_style', label: 'Diarization Style' },
-						{ id: 'audio_events', label: 'Audio Events' },
-						{ id: 'music_events', label: 'Music Events' },
-						{ id: 'applause_events', label: 'Applause Events' },
-						{ id: 'laughter_events', label: 'Laughter Events' },
-						{ id: 'cc_service', label: 'CC Service' },
-						{ id: 'use_newfor', label: 'Output Mode' },
-						{ id: 'teletext_page', label: 'Teletext Page' },
-						{ id: 'display_style', label: 'Display Style' },
 						{ id: 'all_caps', label: 'All Caps' },
-						{ id: 'erase_screen', label: 'Erase Screen' },
-						{ id: 'num_rows', label: 'Number of Caption Rows' },
+						{ id: 'applause_events', label: 'Applause Events' },
+						{ id: 'audio_events', label: 'Audio Events' },
+						{ id: 'base_model', label: 'Base Model' },
 						{ id: 'base_row', label: 'Base Row' },
+						{ id: 'cc_service', label: 'CC Service' },
 						{ id: 'col_indent', label: 'Columns to Indent' },
 						{ id: 'col_width', label: 'Column Width' },
-						{ id: 'icapaccesscode', label: 'iCap Access Code' },
-						{ id: 'timeout', label: 'Timeout' },
-						{ id: 'profanity_filter', label: 'Profanity Filter' },
+						{ id: 'custom_model', label: 'Custom Model' },
+						{ id: 'diarization_style', label: 'Diarization Style' },
 						{ id: 'disfluency_filter', label: 'Disfluency Filter' },
-						{ id: 'vision_positioning', label: 'Vision Positioning' },
+						{ id: 'display_style', label: 'Display Style' },
+						{ id: 'engine', label: 'Engine' },
+						{ id: 'erase_screen', label: 'Erase Screen' },
+						{ id: 'icapaccesscode', label: 'iCap Access Code' },
+						{ id: 'max_delay', label: 'Max Delay' },
 						{ id: 'num_channels_audio', label: 'Multi-Track: Number of Audio Channels' },
 						{ id: 'speaker_label', label: 'Multi-Track: Speaker Labels' },
-						{ id: 'max_delay', label: 'Max Delay' },
+						{ id: 'music_events', label: 'Music Events' },
+						{ id: 'laughter_events', label: 'Laughter Events' },
+						{ id: 'lexiName', label: 'Name' },
+						{ id: 'num_rows', label: 'Number of Caption Rows' },
+						{ id: 'use_newfor', label: 'Output Mode (Use Newfor)' },
+						{ id: 'profanity_filter', label: 'Profanity Filter' },
+						{ id: 'teletext_page', label: 'Teletext Page' },
+						{ id: 'timeout', label: 'Timeout' },
+						{ id: 'vision_positioning', label: 'Vision Positioning' },
 					],
 					minSelection: 1,
 					tooltip: 'Select parameters to modify',
