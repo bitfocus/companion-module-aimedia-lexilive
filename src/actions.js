@@ -728,7 +728,7 @@ export default function (self) {
 				if (options.parameters.includes('max_delay')) {
 					let delay = parseFloat(await context.parseVariablesInString(options.max_delay))
 					if (!isNaN(delay)) {
-						let delay = delay < 0.7 ? 0.7 : delay > 10 ? 10 : delay
+						delay = delay < 0.7 ? 0.7 : delay > 10 ? 10 : delay
 						params.max_delay = delay.toFixed(1)
 					} else {
 						self.log('warn', `Invalid delay value, must be a number. Value: ${delay} from ${options.max_delay}`)
