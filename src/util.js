@@ -136,3 +136,54 @@ export async function updateInstanceList() {
 	this.setVariableValues(this.lexi.instanceNames)
 	this.updatePresetsDefinitions()
 }
+
+export function learnInstanceSettings(instance) {
+	const instanceSettings = this.lexi.instances.get(instance)
+	if (instanceSettings === undefined) return undefined
+	const newSettings = {}
+	if (instanceSettings.all_caps !== undefined) newSettings.all_caps = instanceSettings.all_caps
+	if (instanceSettings.applause_events !== undefined) newSettings.applause_events = instanceSettings.applause_events
+	if (instanceSettings.audio_events !== undefined) newSettings.audio_events = instanceSettings.audio_events
+	if (instanceSettings.base_model !== undefined) newSettings.base_model = instanceSettings.base_model
+	if (instanceSettings.base_row !== undefined) newSettings.base_row = instanceSettings.base_row
+	if (instanceSettings.cc_service !== undefined) newSettings.cc_service = instanceSettings.cc_service
+	if (instanceSettings.col_indent !== undefined) newSettings.col_indent = instanceSettings.col_indent
+	if (instanceSettings.col_width !== undefined) newSettings.col_width = instanceSettings.col_width
+	if (instanceSettings.custom_model !== undefined) newSettings.custom_model = instanceSettings.custom_model
+	if (instanceSettings.diarization_style !== undefined)
+		newSettings.diarization_style = instanceSettings.diarization_style
+	if (instanceSettings.disfluency_filter !== undefined)
+		newSettings.disfluency_filter = instanceSettings.disfluency_filter
+	if (instanceSettings.display_style !== undefined) newSettings.display_style = instanceSettings.display_style
+	if (instanceSettings.engine !== undefined) newSettings.engine = instanceSettings.engine
+	if (instanceSettings.erase_screen !== undefined)
+		newSettings.erase_screen = instanceSettings.erase_screen === 'true' || instanceSettings.erase_screen === true
+	if (instanceSettings.icapaccesscode !== undefined) newSettings.icapaccesscode = instanceSettings.icapaccesscode
+	if (instanceSettings.laughter_events !== undefined) newSettings.laughter_events = instanceSettings.laughter_events
+	if (instanceSettings.max_delay !== undefined) newSettings.max_delay = instanceSettings.max_delay
+	if (instanceSettings.music_events !== undefined) newSettings.music_events = instanceSettings.music_events
+	if (instanceSettings.name !== undefined) newSettings.lexiName = instanceSettings.name
+	if (instanceSettings.num_channels_audio !== undefined)
+		newSettings.num_channels_audio = instanceSettings.num_channels_audio
+	if (instanceSettings.num_rows !== undefined) newSettings.num_rows = instanceSettings.num_rows
+	if (instanceSettings.profanity_filter !== undefined) newSettings.profanity_filter = instanceSettings.profanity_filter
+	if (instanceSettings.speaker_label !== undefined) {
+		if (Array.isArray(instanceSettings.speaker_label)) {
+			let label = ''
+			for (let i = 0; i < instanceSettings.speaker_label.length; i++) {
+				label = label === '' ? instanceSettings.speaker_label[i] : label + ', ' + instanceSettings.speaker_label[i]
+			}
+			newSettings.speaker_label = label
+		} else {
+			newSettings.speaker_label = instanceSettings.speaker_label
+		}
+	}
+	if (instanceSettings.teletext_page !== undefined)
+		newSettings.teletext_page = instanceSettings.teletext_page.toString()
+	if (instanceSettings.timeout !== undefined) newSettings.timeout = instanceSettings.timeout
+	if (instanceSettings.use_newfor !== undefined) newSettings.use_newfor = instanceSettings.use_newfor
+	if (instanceSettings.vision_positioning !== undefined)
+		newSettings.vision_positioning = instanceSettings.vision_positioning
+	if (Object.keys(newSettings).length === 0) return undefined
+	return newSettings
+}
