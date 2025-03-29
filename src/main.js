@@ -85,6 +85,18 @@ class LexiLive extends InstanceBase {
 		}
 	}
 
+	updateInstanceSettings(instanceId, settings) {
+		if (this.lexi.instances.has(instanceId)){
+			this.lexi.instances.set(instanceId,{
+				...this.lexi.instances.get(instanceId),
+				...settings,
+			})
+			return
+		}
+		if (settings.erase_screen === undefined) settings.erase_screen = "false"
+		this.lexi.instances.set(instanceId, settings)
+	}
+
 	pollStatus() {
 		this.queue
 			.add(async () => {
@@ -113,16 +125,7 @@ class LexiLive extends InstanceBase {
 					password: this.config.password,
 				},
 			})
-			this.queue
-				.add(async () => {
-					this.getEngines()
-				})
-				.catch(() => {})
-			this.queue
-				.add(async () => {
-					this.updateInstanceList()
-				})
-				.catch(() => {})
+			await this.updateInstanceList()
 			this.pollStatus()
 		} else {
 			this.log('warn', `Username / Password undefined`)
@@ -139,11 +142,15 @@ class LexiLive extends InstanceBase {
 			instanceState: [],
 			instanceVariables: [],
 			instanceNames: [],
+			baseModels: [],
+			customModels: [],
+			engines: [],
+			instances: new Map(),
 		}
 	}
 
 	async init(config) {
-		await this.configUpdated(config)
+		this.configUpdated(config).catch(()=>{})
 	}
 
 	// When module gets deleted

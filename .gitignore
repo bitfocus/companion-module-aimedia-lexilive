@@ -6,3 +6,4 @@ package-lock.json
 DEBUG-*
 *.zip
 .yarn/
+aimedia-lexilive-*.tgz
