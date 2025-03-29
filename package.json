@@ -1,6 +1,6 @@
 {
 	"name": "aimedia-lexilive",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"main": "src/main.js",
 	"type": "module",
 	"scripts": {
