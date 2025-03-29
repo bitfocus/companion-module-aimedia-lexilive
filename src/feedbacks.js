@@ -93,7 +93,6 @@ export default async function (self) {
 						{ id: 'vision_positioning', label: 'Vision Positioning' },
 					],
 					allowCustom: false,
-					tooltip: 'Select parameters to modify',
 				},
 				{
 					id: 'lexiName',
@@ -128,7 +127,7 @@ export default async function (self) {
 					choices: self.lexi.baseModels ?? [],
 					allowCustom: false,
 					required: false,
-					tooltip: 'The base language model to use',
+					tooltip: 'The base language model in use',
 					isVisible: (options) => {
 						return options.parameters == 'base_model'
 					},
@@ -141,7 +140,7 @@ export default async function (self) {
 					choices: self.lexi.customModels ?? [],
 					allowCustom: false,
 					required: false,
-					tooltip: 'The custom voice model to use',
+					tooltip: 'The custom voice model in use',
 					isVisible: (options) => {
 						return options.parameters == 'custom_model'
 					},
@@ -158,7 +157,7 @@ export default async function (self) {
 					],
 					allowCustom: false,
 					required: false,
-					tooltip: 'The speaker change style to use. This setting is only available for the Lexi 3.0 engine.',
+					tooltip: 'The speaker change style in use. This setting is only available for the Lexi 3.0 engine.',
 					isVisible: (options) => {
 						return options.parameters == 'diarization_style'
 					},
@@ -168,7 +167,7 @@ export default async function (self) {
 					type: 'checkbox',
 					label: 'Audio Events',
 					default: true,
-					tooltip: 'Enables identification of audio events in CC output.',
+					tooltip: 'Identification of audio events in CC output.',
 					isVisible: (options) => {
 						return options.parameters == 'audio_events'
 					},
@@ -178,7 +177,7 @@ export default async function (self) {
 					type: 'checkbox',
 					label: 'Music Events',
 					default: true,
-					tooltip: 'Enables identification of music audio events in CC output.',
+					tooltip: 'Identification of music audio events in CC output.',
 					isVisible: (options) => {
 						return options.parameters == 'music_events'
 					},
@@ -188,7 +187,7 @@ export default async function (self) {
 					type: 'checkbox',
 					label: 'Applause Events',
 					default: true,
-					tooltip: 'Enables identification of music applause audio events in CC output.',
+					tooltip: 'Identification of music applause audio events in CC output.',
 					isVisible: (options) => {
 						return options.parameters == 'applause_events'
 					},
@@ -210,7 +209,7 @@ export default async function (self) {
 					default: '1',
 					useVariables: { local: true },
 					required: false,
-					tooltip: 'The caption service to use (1 - 6).',
+					tooltip: 'The caption service in use (1 - 6).',
 					isVisible: (options) => {
 						return options.parameters == 'cc_service'
 					},
@@ -224,7 +223,6 @@ export default async function (self) {
 						{ id: false, label: '608/708' },
 						{ id: true, label: 'Newfor/Teletext' },
 					],
-					tooltip: `Engages the "Newfor/Teletext" output mode. If not specified, the default output mode is "608/708". Please choose in accordance with your caption encoder's "CC Output Format" setting, as well as the international region in which your content will be viewed.`,
 					isVisible: (options) => {
 						return options.parameters == 'use_newfor'
 					},
@@ -237,7 +235,7 @@ export default async function (self) {
 					useVariables: { local: true },
 					required: false,
 					tooltip:
-						'The Teletext page number to be used with the "Newfor/Teletext" output mode. In the format of: [magazine number][page number (tens)][page number (units)]',
+						'The Teletext page number in use with the "Newfor/Teletext" output mode. In the format of: [magazine number][page number (tens)][page number (units)]',
 					isVisible: (options) => {
 						return options.parameters == 'teletext_page'
 					},
@@ -253,7 +251,7 @@ export default async function (self) {
 					],
 					allowCustom: false,
 					required: false,
-					tooltip: 'Determines the caption advance style.',
+					tooltip: 'The caption advance style.',
 					isVisible: (options) => {
 						return options.parameters == 'display_style'
 					},
@@ -263,7 +261,7 @@ export default async function (self) {
 					type: 'checkbox',
 					label: 'All Caps',
 					default: false,
-					tooltip: `Whether captions should be rendered in ALL CAPS or sentence case.`,
+					tooltip: `Whether captions are rendered in ALL CAPS or sentence case.`,
 					isVisible: (options) => {
 						return options.parameters == 'all_caps'
 					},
@@ -290,7 +288,7 @@ export default async function (self) {
 					],
 					allowCustom: false,
 					required: false,
-					tooltip: 'The number of caption rows to use in output captions.',
+					tooltip: 'The number of caption rows used in output captions.',
 					isVisible: (options) => {
 						return options.parameters == 'num_rows'
 					},
@@ -370,7 +368,7 @@ export default async function (self) {
 					],
 					allowCustom: false,
 					required: false,
-					tooltip: 'The number of columns to indent from the left-hand side of screen.',
+					tooltip: 'The number of columns indented from the left-hand side of screen.',
 					isVisible: (options) => {
 						return options.parameters == 'col_indent'
 					},
@@ -390,8 +388,7 @@ export default async function (self) {
 					],
 					allowCustom: false,
 					required: false,
-					tooltip:
-						'Set the amount of characters per row of text. * 36 character rows may not be compatible with North American broadcast workflows',
+					tooltip: 'The amount of characters per row of text.',
 					isVisible: (options) => {
 						return options.parameters == 'col_width'
 					},
@@ -403,7 +400,7 @@ export default async function (self) {
 					default: '',
 					useVariables: { local: true },
 					required: false,
-					tooltip: 'The iCap Access Code to use for caption delivery.',
+					tooltip: 'The iCap Access Code in use for caption delivery.',
 					isVisible: (options) => {
 						return options.parameters == 'icapaccesscode'
 					},
@@ -434,7 +431,6 @@ export default async function (self) {
 					type: 'checkbox',
 					label: 'Profanity Filter',
 					default: false,
-					tooltip: `Engages a basic profanity filter.`,
 					isVisible: (options) => {
 						return options.parameters == 'profanity_filter'
 					},
@@ -444,7 +440,7 @@ export default async function (self) {
 					type: 'checkbox',
 					label: 'Disfluency Filter',
 					default: false,
-					tooltip: `Enable to filter out “um”, “uh”, “ah”, etc.`,
+					tooltip: `To filter out “um”, “uh”, “ah”, etc.`,
 					isVisible: (options) => {
 						return options.parameters == 'disfluency_filter'
 					},
@@ -454,7 +450,7 @@ export default async function (self) {
 					type: 'checkbox',
 					label: 'Vision Positioning',
 					default: false,
-					tooltip: `Engages a basic facial and text detector to attempt to keep captions from obscuring faces and Character Generator elements.`,
+					tooltip: `A basic facial and text detector to attempt to keep captions from obscuring faces and Character Generator elements.`,
 					isVisible: (options) => {
 						return options.parameters == 'vision_positioning'
 					},
@@ -476,7 +472,7 @@ export default async function (self) {
 					],
 					allowCustom: false,
 					required: false,
-					tooltip: 'Sets number of discreet speaker feeds are being used for speaker identification.',
+					tooltip: 'Number of discreet speaker feeds are being used for speaker identification.',
 					isVisible: (options) => {
 						return options.parameters == 'num_channels_audio'
 					},
@@ -502,7 +498,7 @@ export default async function (self) {
 					useVariables: { local: true },
 					required: false,
 					tooltip:
-						'Sets the maximum number of seconds between receiving audio input and producing CC output. Higher max_delay values may yield greater recognition accuracy. Values to use: 0.7 through 10',
+						'The maximum number of seconds between receiving audio input and producing CC output. Higher max_delay values may yield greater recognition accuracy. Values to use: 0.7 through 10',
 					isVisible: (options) => {
 						return options.parameters == 'max_delay'
 					},
