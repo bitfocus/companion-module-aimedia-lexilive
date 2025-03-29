@@ -521,7 +521,7 @@ export default function (self) {
 					],
 					allowCustom: false,
 					required: false,
-					tooltip: 'Silence ilence allowed before iCap will auto-terminate a job (to reduce billing charges).',
+					tooltip: 'Silence allowed before iCap will auto-terminate a job (to reduce billing charges).',
 					isVisible: (options) => {
 						return options.parameters.includes('timeout')
 					},
@@ -599,7 +599,7 @@ export default function (self) {
 					useVariables: { local: true },
 					required: false,
 					tooltip:
-						'Sets she maximum number of seconds between receiving audio input and producing CC output. Higher max_delay values may yield greater recognition accuracy. Values to use: 0.7 through 10',
+						'Sets the maximum number of seconds between receiving audio input and producing CC output. Higher max_delay values may yield greater recognition accuracy. Values to use: 0.7 through 10',
 					isVisible: (options) => {
 						return options.parameters.includes('max_delay')
 					},
@@ -726,11 +726,12 @@ export default function (self) {
 						.map((label) => label.trim())
 				}
 				if (options.parameters.includes('max_delay')) {
-					const delay = parseFloat(await context.parseVariablesInString(options.max_delay)).toFixed(1)
-					if (!isNaN(delay) && delay >= 0.7 && delay <= 10) {
-						params.max_delay = delay.toString()
+					let delay = parseFloat(await context.parseVariablesInString(options.max_delay))
+					if (!isNaN(delay)) {
+						let delay = delay < 0.7 ? 0.7 : delay > 10 ? 10 : delay
+						params.max_delay = delay.toFixed(1)
 					} else {
-						self.log('warn', `Invalid delay value, must be between 0.7 and 10. Value: ${delay}`)
+						self.log('warn', `Invalid delay value, must be a number. Value: ${delay} from ${options.max_delay}`)
 					}
 				}
 				if (Object.keys(params).length === 0) return
