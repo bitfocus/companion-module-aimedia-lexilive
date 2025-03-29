@@ -27,9 +27,9 @@ Instance Configuration
 ### Version 1.2.0
 - New Action: Modify Instance
 - New Feedback: Instance Configuration
-- Improvement: Polling instances no longer retrieves instance history.
+- Improvement: Polling instances no longer retrieves instance history
+- Improvement: Parse local variables
 - Fix: Update Instance List action
-- Parse local variables
 
 ### Version 1.1.6
 
