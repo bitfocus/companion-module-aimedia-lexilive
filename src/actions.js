@@ -1,17 +1,25 @@
 import { Regex } from '@companion-module/base'
+import { api_timeOut } from './main.js'
 
 export default function (self) {
 	self.setActionDefinitions({
 		instanceList: {
 			name: 'Update Instance List',
-			options: [],
+			options: [
+				{
+					id: 'important-line',
+					type: 'static-text',
+					label: 'Note',
+					value: 'Updates drop down lists of base models, custom models, engines, and instances',
+				},
+			],
 			callback: async () => {
-				await this.queue.add(async () => {
+				await self.queue.add(async () => {
 					self.updateInstanceList()
 				})
 			},
 			subscribe: async () => {
-				await this.queue.add(async () => {
+				await self.queue.add(async () => {
 					self.updateInstanceList()
 				})
 			},
@@ -23,8 +31,8 @@ export default function (self) {
 					id: 'instance',
 					type: 'dropdown',
 					label: 'Instance',
-					default: self.lexi.instanceList.find(() => true)?.id ?? 'No available instances',
-					choices: self.lexi.instanceList ?? [],
+					default: self.lexi?.instanceList[0]?.id ?? 'No available instances',
+					choices: self.lexi?.instanceList ?? [],
 					allowCustom: true,
 					tooltip: 'Varible must return an instance id',
 				},
@@ -54,10 +62,10 @@ export default function (self) {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				let instance = await context.parseVariablesInString(options.instance)
-				let origin = await context.parseVariablesInString(options.init_origin)
-				let reason = await context.parseVariablesInString(options.init_reason)
-				if (instance === undefined || instance === 'No available instances') {
+				const instance = await context.parseVariablesInString(options.instance)
+				const origin = await context.parseVariablesInString(options.init_origin)
+				const reason = await context.parseVariablesInString(options.init_reason)
+				if (instance === undefined || instance === '' || instance === 'No available instances') {
 					self.log('warn', 'No instance provided to Instance Start')
 					return undefined
 				}
@@ -81,8 +89,8 @@ export default function (self) {
 					id: 'instance',
 					type: 'dropdown',
 					label: 'Instance',
-					default: self.lexi.instanceList.find(() => true)?.id ?? 'No available instances',
-					choices: self.lexi.instanceList ?? [],
+					default: self.lexi?.instanceList[0]?.id ?? 'No available instances',
+					choices: self.lexi?.instanceList ?? [],
 					allowCustom: true,
 					regex: Regex.SOMETHING,
 					tooltip: 'Varible must return an instance id',
@@ -113,10 +121,10 @@ export default function (self) {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				let instance = await context.parseVariablesInString(options.instance)
-				let origin = await context.parseVariablesInString(options.term_origin)
-				let reason = await context.parseVariablesInString(options.term_reason)
-				if (instance === undefined || instance === 'No available instances') {
+				const instance = await context.parseVariablesInString(options.instance)
+				const origin = await context.parseVariablesInString(options.term_origin)
+				const reason = await context.parseVariablesInString(options.term_reason)
+				if (instance === undefined || instance === '' || instance === 'No available instances') {
 					self.log('warn', 'No instance provided to Instance Stop')
 					return undefined
 				}
@@ -135,16 +143,17 @@ export default function (self) {
 		},
 		instanceModify: {
 			name: 'Modify Instance',
+			learnTimeout: api_timeOut * 2, //api timeout with factor to allow for being in queue
 			options: [
 				{
 					id: 'instance',
 					type: 'dropdown',
 					label: 'Instance',
-					default: self.lexi.instanceList.find(() => true)?.id ?? 'No available instances',
-					choices: self.lexi.instanceList ?? [],
+					default: self.lexi?.instanceList[0]?.id ?? 'No available instances',
+					choices: self.lexi?.instanceList ?? [],
 					allowCustom: true,
 					regex: Regex.SOMETHING,
-					tooltip: 'Varible must return an instance id',
+					tooltip: 'Varible must return an instance id. Instance must not be running.',
 				},
 				{
 					id: 'parameters',
@@ -152,7 +161,7 @@ export default function (self) {
 					label: 'Parameters',
 					default: [],
 					choices: [
-						{ id: 'name', label: 'Name' },
+						{ id: 'lexiName', label: 'Name' },
 						{ id: 'engine', label: 'Engine' },
 						{ id: 'base_model', label: 'Base Model' },
 						{ id: 'custom_model', label: 'Custom Model' },
@@ -162,26 +171,28 @@ export default function (self) {
 						{ id: 'applause_events', label: 'Applause Events' },
 						{ id: 'laughter_events', label: 'Laughter Events' },
 						{ id: 'cc_service', label: 'CC Service' },
-						{ id: 'use_newfor', label: 'Use Newfor' },
+						{ id: 'use_newfor', label: 'Output Mode' },
 						{ id: 'teletext_page', label: 'Teletext Page' },
 						{ id: 'display_style', label: 'Display Style' },
 						{ id: 'all_caps', label: 'All Caps' },
 						{ id: 'num_rows', label: 'Number of Caption Rows' },
 						{ id: 'base_row', label: 'Base Row' },
 						{ id: 'col_indent', label: 'Columns to Indent' },
+						{ id: 'col_width', label: 'Column Width' },
 						{ id: 'icapaccesscode', label: 'iCap Access Code' },
 						{ id: 'timeout', label: 'Timeout' },
 						{ id: 'profanity_filter', label: 'Profanity Filter' },
+						{ id: 'disfluency_filter', label: 'Disfluency Filter' },
 						{ id: 'vision_positioning', label: 'Vision Positioning' },
-						{ id: 'num_channels_audio', label: 'Number of Audio Channels' },
-						{ id: 'speaker_label', label: 'Speaker Labels' },
+						{ id: 'num_channels_audio', label: 'Multi-Track: Number of Audio Channels' },
+						{ id: 'speaker_label', label: 'Multi-Track: Speaker Labels' },
 						{ id: 'max_delay', label: 'Max Delay' },
 					],
 					minSelection: 1,
 					tooltip: 'Select parameters to modify',
 				},
 				{
-					id: 'name',
+					id: 'lexiName',
 					type: 'textinput',
 					label: 'Name',
 					default: '',
@@ -189,16 +200,16 @@ export default function (self) {
 					required: false,
 					tooltip: 'The LEXI Live instance name',
 					isVisible: (options) => {
-						return options.parameters.includes('name')
+						return options.parameters.includes('lexiName')
 					},
 				},
 				{
 					id: 'engine',
 					type: 'dropdown',
 					label: 'Engine',
-					default: self.lexi.engineList.find(() => true)?.id ?? 'No available engines',
-					choices: self.lexi.engineList ?? [],
-					allowCustom: true,
+					default: self.lexi.engines[0]?.id ?? 'No available engines',
+					choices: self.lexi.engines ?? [],
+					allowCustom: false,
 					required: false,
 					tooltip: 'The LEXI Live engine name',
 					isVisible: (options) => {
@@ -209,9 +220,9 @@ export default function (self) {
 					id: 'base_model',
 					type: 'dropdown',
 					label: 'Base Model',
-					default: self.lexi.baseModel.find(() => true)?.id ?? 'No available language models',
-					choices: self.lexi.baseModel ?? [],
-					allowCustom: true,
+					default: self.lexi.baseModels[0]?.id ?? 'No available language models',
+					choices: self.lexi.baseModels ?? [],
+					allowCustom: false,
 					required: false,
 					tooltip: 'The base language model to use',
 					isVisible: (options) => {
@@ -222,9 +233,9 @@ export default function (self) {
 					id: 'custom_model',
 					type: 'dropdown',
 					label: 'Custom Model',
-					default: self.lexi.customModel.find(() => true)?.id ?? 'No available custom models',
-					choices: self.lexi.customModel ?? [],
-					allowCustom: true,
+					default: self.lexi.customModels[0]?.id ?? 'No available custom models',
+					choices: self.lexi.customModels ?? [],
+					allowCustom: false,
 					required: false,
 					tooltip: 'The custom voice model to use',
 					isVisible: (options) => {
@@ -302,9 +313,13 @@ export default function (self) {
 				},
 				{
 					id: 'use_newfor',
-					type: 'checkbox',
-					label: 'Use Newfor',
+					type: 'dropdown',
+					label: 'Output Mode',
 					default: false,
+					choices: [
+						{ id: false, label: '608/708' },
+						{ id: true, label: 'Newfor/Teletext' },
+					],
 					tooltip: `Engages the "Newfor/Teletext" output mode. If not specified, the default output mode is "608/708". Please choose in accordance with your caption encoder's "CC Output Format" setting, as well as the international region in which your content will be viewed.`,
 					isVisible: (options) => {
 						return options.parameters.includes('use_newfor')
@@ -372,8 +387,7 @@ export default function (self) {
 					label: 'Base Row',
 					default: '13',
 					choices: [
-						{ id: '1', label: '1 (Top)' },
-						{ id: '2', label: '2' },
+						{ id: '2', label: '2 (608/708 Only)' },
 						{ id: '3', label: '3' },
 						{ id: '4', label: '4' },
 						{ id: '5', label: '5' },
@@ -386,7 +400,16 @@ export default function (self) {
 						{ id: '12', label: '12' },
 						{ id: '13', label: '13' },
 						{ id: '14', label: '14' },
-						{ id: '15', label: '15 (Bottom)' },
+						{ id: '15', label: '15' },
+						{ id: '16', label: '16 (Newfor/Teletext Only)' },
+						{ id: '17', label: '17 (Newfor/Teletext Only)' },
+						{ id: '18', label: '18 (Newfor/Teletext Only)' },
+						{ id: '19', label: '19 (Newfor/Teletext Only)' },
+						{ id: '20', label: '20 (Newfor/Teletext Only)' },
+						{ id: '21', label: '21 (Newfor/Teletext Only)' },
+						{ id: '22', label: '22 (Newfor/Teletext Only)' },
+						{ id: '23', label: '23 (Newfor/Teletext Only)' },
+						{ id: '24', label: '24 (Newfor/Teletext Only)' },
 					],
 					allowCustom: false,
 					required: false,
@@ -402,6 +425,7 @@ export default function (self) {
 					label: 'Columns to Indent',
 					default: '1',
 					choices: [
+						{ id: '0', label: '0' },
 						{ id: '1', label: '1' },
 						{ id: '2', label: '2' },
 						{ id: '3', label: '3' },
@@ -429,17 +453,33 @@ export default function (self) {
 						{ id: '25', label: '25' },
 						{ id: '26', label: '26' },
 						{ id: '27', label: '27' },
-						{ id: '28', label: '28' },
-						{ id: '29', label: '29' },
-						{ id: '30', label: '30' },
-						{ id: '31', label: '31' },
-						{ id: '32', label: '32' },
 					],
 					allowCustom: false,
 					required: false,
 					tooltip: 'The number of columns to indent from the left-hand side of screen.',
 					isVisible: (options) => {
 						return options.parameters.includes('col_indent')
+					},
+				},
+				{
+					id: 'col_width',
+					type: 'dropdown',
+					label: 'Column Width',
+					default: '1',
+					choices: [
+						{ id: '16', label: '16 Characters' },
+						{ id: '20', label: '20 Characters' },
+						{ id: '24', label: '24 Characters' },
+						{ id: '28', label: '28 Characters' },
+						{ id: '32', label: '32 Characters' },
+						{ id: '36', label: '36 Characters *' },
+					],
+					allowCustom: false,
+					required: false,
+					tooltip:
+						'Set the amount of characters per row of text. * 36 character rows may not be compatible with North American broadcast workflows',
+					isVisible: (options) => {
+						return options.parameters.includes('col_width')
 					},
 				},
 				{
@@ -456,13 +496,21 @@ export default function (self) {
 				},
 				{
 					id: 'timeout',
-					type: 'textinput',
+					type: 'dropdown',
 					label: 'Timeout',
-					default: '-1',
-					useVariables: { local: true },
+					default: 600,
+					choices: [
+						{ id: 600, label: '10 Minutes' },
+						{ id: 1200, label: '20 Minutes' },
+						{ id: 1800, label: '30 Minutes' },
+						{ id: 2400, label: '40 Minutes' },
+						{ id: 3000, label: '50 Minutes' },
+						{ id: 3600, label: '60 Minutes' },
+						{ id: -1, label: 'None' },
+					],
+					allowCustom: false,
 					required: false,
-					tooltip:
-						'The number of seconds (integer value) of silence allowed before iCap will auto-terminate a job (to reduce billing charges).',
+					tooltip: 'Silence ilence allowed before iCap will auto-terminate a job (to reduce billing charges).',
 					isVisible: (options) => {
 						return options.parameters.includes('timeout')
 					},
@@ -475,6 +523,16 @@ export default function (self) {
 					tooltip: `Engages a basic profanity filter.`,
 					isVisible: (options) => {
 						return options.parameters.includes('profanity_filter')
+					},
+				},
+				{
+					id: 'disfluency_filter',
+					type: 'checkbox',
+					label: 'Disfluency Filter',
+					default: false,
+					tooltip: `Enable to filter out “um”, “uh”, “ah”, etc.`,
+					isVisible: (options) => {
+						return options.parameters.includes('disfluency_filter')
 					},
 				},
 				{
@@ -493,6 +551,7 @@ export default function (self) {
 					label: 'Number of Audio Channels',
 					default: '2',
 					choices: [
+						{ id: '0', label: 'Off' },
 						{ id: '2', label: '2' },
 						{ id: '3', label: '3' },
 						{ id: '4', label: '4' },
@@ -516,7 +575,7 @@ export default function (self) {
 					useVariables: { local: true },
 					required: false,
 					tooltip:
-						'Comma seperated array of strings to use as speaker identification labels. I.e. >> Fred:, >> Barney:',
+						'Comma seperated array of strings to use as speaker identification labels. I.e. >> Fred:, >> Barney:. Should match the number of audio channels.',
 					isVisible: (options) => {
 						return options.parameters.includes('speaker_label')
 					},
@@ -536,87 +595,98 @@ export default function (self) {
 				},
 			],
 			callback: async ({ options }, context) => {
-				if (self.axios === undefined) {
+				if (self.axios === undefined || options.parameters.length === 0) {
 					return undefined
 				}
-				let instance = await context.parseVariablesInString(options.instance)
-				if (instance === undefined || instance === 'No available instances') {
+				const instance = await context.parseVariablesInString(options.instance)
+				if (instance === undefined || instance === '' || instance === 'No available instances') {
 					self.log('warn', 'No instance provided to Modfy Instance')
 					return undefined
 				}
-				if (options.parameters.length === 0) return //nothig selected
+				if (self.lexi.instanceState[instance] === 'ON') {
+					self.log('warn', `Instance ${instance} is on, can not modify`)
+					return undefined
+				}
 				const params = {}
-				if (options.parameters.includes('name')) {
-					params.name = await context.parseVariablesInString(options.name)
+				if (options.parameters.includes('lexiName')) {
+					params.name = await context.parseVariablesInString(options.lexiName)
 				}
 				if (options.parameters.includes('engine')) {
 					const engine = await context.parseVariablesInString(options.engine)
-					if (engine !== 'No available engines') params.engine = engine
+					if (engine !== 'No available engines' && engine !== '') params.engine = engine
 				}
 				if (options.parameters.includes('base_model')) {
 					const base_model = await context.parseVariablesInString(options.base_model)
-					if (base_model !== 'No available language models') params.base_model = base_model
+					if (base_model !== 'No available language models' && base_model !== '') params.base_model = base_model
 				}
 				if (options.parameters.includes('custom_model')) {
 					const custom_model = await context.parseVariablesInString(options.custom_model)
-					if (custom_model !== 'No available custom models') params.custom_model = custom_model
+					if (custom_model !== 'No available custom models' && custom_model !== '') {
+						params.custom_model = custom_model
+						params.custom_models = [custom_model]
+					}
 				}
 				if (options.parameters.includes('diarization_style')) {
-					params.diarization_style = String(options.diarization_style)
+					params.diarization_style = options.diarization_style
 				}
 				if (options.parameters.includes('audio_events')) {
-					params.audio_events = options.audio_events.toString()
+					params.audio_events = options.audio_events
 				}
 				if (options.parameters.includes('music_events')) {
-					params.music_events = options.music_events.toString()
+					params.music_events = options.music_events
 				}
 				if (options.parameters.includes('applause_events')) {
-					params.applause_events = options.applause_events.toString()
+					params.applause_events = options.applause_events
 				}
 				if (options.parameters.includes('laughter_events')) {
-					params.laughter_events = options.laughter_events.toString()
+					params.laughter_events = options.laughter_events
 				}
 				if (options.parameters.includes('cc_service')) {
 					const cc_service = parseInt(await context.parseVariablesInString(options.cc_service))
 					if (cc_service >= 1 && cc_service <= 6) params.cc_service = cc_service.toString()
 				}
 				if (options.parameters.includes('use_newfor')) {
-					params.use_newfor = options.use_newfor.toString()
+					params.use_newfor = options.use_newfor
 				}
 				if (options.parameters.includes('teletext_page')) {
-					const page = parseInt(await context.parseVariablesInString(options.teletext_page))
-					if (!isNaN(page) && page >= 100 && page <= 999) params.teletext_page = page.toString()
+					const page = await context.parseVariablesInString(options.teletext_page)
+					if (page.length === 3) params.teletext_page = page
 				}
 				if (options.parameters.includes('display_style')) {
-					params.display_style = String(options.display_style)
+					params.display_style = options.display_style
 				}
 				if (options.parameters.includes('all_caps')) {
-					params.all_caps = options.all_caps.toString()
+					params.all_caps = options.all_caps
 				}
 				if (options.parameters.includes('num_rows')) {
-					params.num_rows = String(options.num_rows)
+					params.num_rows = options.num_rows
 				}
 				if (options.parameters.includes('base_row')) {
-					params.base_row = String(options.base_row)
+					params.base_row = options.base_row
 				}
 				if (options.parameters.includes('col_indent')) {
-					params.col_indent = String(options.col_indent)
+					params.col_indent = options.col_indent
+				}
+				if (options.parameters.includes('col_width')) {
+					params.col_width = options.col_width
 				}
 				if (options.parameters.includes('icapaccesscode')) {
 					params.icapaccesscode = await context.parseVariablesInString(options.icapaccesscode)
 				}
 				if (options.parameters.includes('timeout')) {
-					const timeout = parseInt(await context.parseVariablesInString(options.timeout))
-					if (!isNaN(timeout) && timeout >= -1) params.timeout = timeout
+					params.timeout = options.timeout
 				}
 				if (options.parameters.includes('profanity_filter')) {
-					params.profanity_filter = options.profanity_filter.toString()
+					params.profanity_filter = options.profanity_filter
+				}
+				if (options.parameters.includes('disfluency_filter')) {
+					params.disfluency_filter = options.disfluency_filter.toString()
 				}
 				if (options.parameters.includes('vision_positioning')) {
-					params.vision_positioning = options.vision_positioning.toString()
+					params.vision_positioning = options.vision_positioning
 				}
 				if (options.parameters.includes('num_channels_audio')) {
-					params.num_channels_audio = String(options.num_channels_audio)
+					params.num_channels_audio = options.num_channels_audio
 				}
 				if (options.parameters.includes('speaker_label')) {
 					params.speaker_label = (await context.parseVariablesInString(options.speaker_label)).split(',')
@@ -639,25 +709,29 @@ export default function (self) {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				let instance = await context.parseVariablesInString(options.instance)
-				if (instance === undefined || instance === 'No available instances') {
-					self.log('warn', 'No instance provided to Modify Instance')
+				const instance = await context.parseVariablesInString(options.instance)
+				if (instance === undefined || instance === '' || instance === 'No available instances') {
+					self.log('warn', 'No instance provided to Modfy Instance')
 					return undefined
 				}
 
-				await self.queue.add(async () => {
+				return await self.queue.add(async () => {
 					try {
-						const response = await self.axios.get(`/live/v2/instances/${instance}`, JSON.stringify({ get_history: 0 }))
+						self.log('info', `Learning instance id ${instance}`)
+						const response = await self.axios.get(`/live/v2/instances`)
 						self.logResponse(response)
-						return {
+						self.log('info', `/live/v2/instances/${instance}: ${JSON.stringify(response)}`)
+						return undefined
+						/* return {
 							...options,
 							name: response.settings.name ?? options.name,
 							engine: response.settings.engine ?? options.engine,
 							base_model: response.settings.base_model ?? options.base_model,
 							custom_model: response.settings.custom_model ?? options.custom_model,
 							diarization_style: response.settings.diarization_style ?? options.diarization_style,
-						}
+						} */
 					} catch (error) {
+						self.log('error', error)
 						self.logError(error)
 						return undefined
 					}

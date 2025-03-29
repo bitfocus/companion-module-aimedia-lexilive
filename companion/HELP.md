@@ -10,7 +10,7 @@ Start, stop and modify Lexi Live instances.
 
 The origin and reason fields are written to the Lexi Live logs. The default origin is companion_v(Module Version Number)@(User):(Host).
 
-Update Instance List will repopulate the instances availalbe in the actions, feedbacks, variables and presets.
+Update Instance List will repopulate the base models, custom models, enginers and instances availalbe in the actions, feedbacks, variables and presets.
 
 ### Variables
 

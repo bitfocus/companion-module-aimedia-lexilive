@@ -4,12 +4,21 @@ export async function getEngines() {
 	}
 	try {
 		const response = await this.queue.add(async () => {
-			return await this.axios.get('/live/v1/engines')
+			return await this.axios.get('/live/v2/engines')
 		})
 		this.logResponse(response)
 		if (response.data === undefined) {
 			this.log('warn', 'getEngines response contains no data')
 			return undefined
+		}
+		//this.log('info', `Engines: ${JSON.stringify(response.data)}`)
+		if (Array.isArray(response.data.engines)) {
+			this.lexi.engines = []
+			response.data.engines.forEach((engine) => {
+				if (engine.name !== undefined) {
+					this.lexi.engines.push({ id: engine.name, label: engine?.display_name ?? engine.name })
+				}
+			})
 		}
 		return response.data
 	} catch (error) {
@@ -31,6 +40,17 @@ export async function getBaseModels() {
 			this.log('warn', 'getBaseModels response contains no data')
 			return undefined
 		}
+		const modelKeys = Object.keys(response.data.models)
+		if (modelKeys.length > 0) this.lexi.baseModels = []
+		modelKeys.forEach((model) => {
+			if (response.data.models[model].base_model_name !== undefined) {
+				this.lexi.baseModels.push({
+					id: response.data.models[model].base_model_name,
+					label: response.data.models[model].display_name ?? response.data.models[model].base_model_name,
+				})
+			}
+		})
+		//this.log('info', `Base Models: ${JSON.stringify(response.data)}`)
 		return response.data
 	} catch (error) {
 		this.logError(error)
@@ -51,6 +71,17 @@ export async function getCustomModels() {
 			this.log('warn', 'getCustomModels response contains no data')
 			return undefined
 		}
+		//this.log('info', `Custom Models: ${JSON.stringify(response.data)}`)
+		if (Array.isArray(response.data.models)) {
+			this.lexi.customModels = []
+			response.data.models.forEach((model) => {
+				if (model.modelID !== undefined) {
+					let displayName = model.model_name
+					if (model?.global_language?.display_name) displayName += ` (${model?.global_language?.display_name})`
+					this.lexi.customModels.push({ id: model.modelID, label: displayName })
+				}
+			})
+		}
 		return response.data
 	} catch (error) {
 		this.logError(error)
@@ -64,7 +95,7 @@ export async function getInstances() {
 	}
 	try {
 		const response = await this.queue.add(async () => {
-			return await this.axios.get('/live/v2/instances')
+			return await this.axios.get('/live/v2/instances', { params: { get_history: 0 } })
 		})
 		this.logResponse(response)
 		if (response.data === undefined) {
@@ -78,6 +109,7 @@ export async function getInstances() {
 			if (instance.instance_id !== undefined) {
 				this.lexi.instanceState[instance.instance_id] = instance.state
 				this.lexi.instanceList.push({ id: instance.instance_id, label: instance.settings.name })
+				//this.log('debug', JSON.stringify(instance.settings))
 				this.lexi.instanceVariables.push({
 					variableId: `instance_${instance.instance_id}`,
 					name: `${instance.instance_id} Name`,

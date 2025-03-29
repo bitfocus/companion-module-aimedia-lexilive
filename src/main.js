@@ -15,7 +15,7 @@ const hostname = os.hostname()
 const userinfo = os.userInfo()
 
 const api_endpoint = 'https://eegcloud.tv/speech-recognition'
-const api_timeOut = 5000
+export const api_timeOut = 5000
 const api_headers = { 'Content-Type': 'application/json' }
 
 const dummy_password = '******'
