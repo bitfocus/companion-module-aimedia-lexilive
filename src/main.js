@@ -15,7 +15,7 @@ const hostname = os.hostname()
 const userinfo = os.userInfo()
 
 const api_endpoint = 'https://eegcloud.tv/speech-recognition'
-export const api_timeOut = 5000
+const api_timeOut = 5000
 const api_headers = { 'Content-Type': 'application/json' }
 
 const dummy_password = '******'
@@ -85,6 +85,18 @@ class LexiLive extends InstanceBase {
 		}
 	}
 
+	updateInstanceSettings(instanceId, settings) {
+		if (this.lexi.instances.has(instanceId)){
+			this.lexi.instances.set(instanceId,{
+				...this.lexi.instances.get(instanceId),
+				...settings,
+			})
+			return
+		}
+		if (settings.erase_screen === undefined) settings.erase_screen = "false"
+		this.lexi.instances.set(instanceId, settings)
+	}
+
 	pollStatus() {
 		this.queue
 			.add(async () => {
@@ -113,11 +125,7 @@ class LexiLive extends InstanceBase {
 					password: this.config.password,
 				},
 			})
-			this.queue
-				.add(async () => {
-					this.updateInstanceList()
-				})
-				.catch(() => {})
+			await this.updateInstanceList()
 			this.pollStatus()
 		} else {
 			this.log('warn', `Username / Password undefined`)
@@ -137,6 +145,7 @@ class LexiLive extends InstanceBase {
 			baseModels: [],
 			customModels: [],
 			engines: [],
+			instances: new Map(),
 		}
 	}
 

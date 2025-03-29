@@ -109,7 +109,7 @@ export async function getInstances() {
 			if (instance.instance_id !== undefined) {
 				this.lexi.instanceState[instance.instance_id] = instance.state
 				this.lexi.instanceList.push({ id: instance.instance_id, label: instance.settings.name })
-				//this.log('debug', JSON.stringify(instance.settings))
+				this.updateInstanceSettings(instance.instance_id, instance.settings)
 				this.lexi.instanceVariables.push({
 					variableId: `instance_${instance.instance_id}`,
 					name: `${instance.instance_id} Name`,
