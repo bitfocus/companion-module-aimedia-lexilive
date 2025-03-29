@@ -301,7 +301,7 @@ export default function (self) {
 					},
 				},
 				{
-					id: 'name',
+					id: 'cc_service',
 					type: 'textinput',
 					label: 'CC Service',
 					default: '1',
