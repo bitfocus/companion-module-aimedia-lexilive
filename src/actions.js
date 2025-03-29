@@ -734,7 +734,10 @@ export default function (self) {
 						self.log('warn', `Invalid delay value, must be a number. Value: ${delay} from ${options.max_delay}`)
 					}
 				}
-				if (Object.keys(params).length === 0) return
+				if (Object.keys(params).length === 0) {
+					self.log('warn', `No valid parameters to modify on instance: ${instance}, action aborted`)
+					return undefined
+				}
 				await self.queue.add(async () => {
 					try {
 						const response = await self.axios.patch(`/live/v2/instances/${instance}`, JSON.stringify(params))
@@ -800,7 +803,7 @@ export default function (self) {
 				if (instanceSettings.use_newfor !== undefined) newSettings.use_newfor = instanceSettings.use_newfor
 				if (instanceSettings.vision_positioning !== undefined)
 					newSettings.vision_positioning = instanceSettings.vision_positioning
-				if (newSettings === undefined) return undefined
+				if (Object.keys(newSettings).length === 0) return undefined
 				return {
 					...options,
 					...newSettings,
