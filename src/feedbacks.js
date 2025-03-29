@@ -503,6 +503,22 @@ export default async function (self) {
 						return options.parameters == 'max_delay'
 					},
 				},
+				{
+					id: 'important-line',
+					type: 'static-text',
+					label: 'Note',
+					value: 'Some parameter values not reported by Lexi API when not in use.',
+					isVisible: (options) => {
+						const unreliableParams = [
+							'teletext_page',
+							'erase_screen',
+							'music_events',
+							'applause_events',
+							'laughter_events',
+						]
+						return unreliableParams.includes(options.parameters)
+					},
+				},
 			],
 			callback: async (feedback, context) => {
 				let instance = await context.parseVariablesInString(feedback.options.instance)
