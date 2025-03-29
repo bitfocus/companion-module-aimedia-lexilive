@@ -175,6 +175,7 @@ export default function (self) {
 						{ id: 'teletext_page', label: 'Teletext Page' },
 						{ id: 'display_style', label: 'Display Style' },
 						{ id: 'all_caps', label: 'All Caps' },
+						{ id: 'erase_screen', label: 'Erase Screen' },
 						{ id: 'num_rows', label: 'Number of Caption Rows' },
 						{ id: 'base_row', label: 'Base Row' },
 						{ id: 'col_indent', label: 'Columns to Indent' },
@@ -362,6 +363,16 @@ export default function (self) {
 					tooltip: `Whether captions should be rendered in ALL CAPS or sentence case.`,
 					isVisible: (options) => {
 						return options.parameters.includes('all_caps')
+					},
+				},
+				{
+					id: 'erase_screen',
+					type: 'checkbox',
+					label: 'Erase Screen',
+					default: false,
+					tooltip: `Erase the screen when Lexi enters standby or is stopped`,
+					isVisible: (options) => {
+						return options.parameters.includes('erase_screen')
 					},
 				},
 				{
@@ -657,6 +668,9 @@ export default function (self) {
 				}
 				if (options.parameters.includes('all_caps')) {
 					params.all_caps = options.all_caps
+				}
+				if (options.parameters.includes('erase_screen')) {
+					params.erase_screen = options.erase_screen.toString()
 				}
 				if (options.parameters.includes('num_rows')) {
 					params.num_rows = options.num_rows
