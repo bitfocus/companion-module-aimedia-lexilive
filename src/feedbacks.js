@@ -5,7 +5,6 @@ export default async function (self) {
 		instanceState: {
 			name: 'Instance State',
 			type: 'boolean',
-			label: 'Channel State',
 			defaultStyle: {
 				bgcolor: combineRgb(255, 0, 0),
 				color: combineRgb(0, 0, 0),
@@ -15,8 +14,8 @@ export default async function (self) {
 					id: 'instance',
 					type: 'dropdown',
 					label: 'Instance',
-					default: '',
-					choices: self.lexi.instanceList,
+					default: self.lexi?.instanceList[0]?.id ?? 'No available instances',
+					choices: self.lexi?.instanceList ?? [],
 					allowCustom: true,
 					tooltip: 'Varible must return an instance id',
 				},
@@ -35,7 +34,631 @@ export default async function (self) {
 			callback: async (feedback, context) => {
 				let instance = await context.parseVariablesInString(feedback.options.instance)
 				let state = await context.parseVariablesInString(feedback.options.state)
+				if (instance === undefined || instance === '' || instance === 'No available instances') {
+					self.log('warn', 'No instance provided to Instance State')
+					return undefined
+				}
 				return self.lexi.instanceState[instance] == state
+			},
+		},
+		instanceConfig: {
+			name: 'Instance Configuration',
+			type: 'boolean',
+			defaultStyle: {
+				bgcolor: combineRgb(255, 0, 0),
+				color: combineRgb(0, 0, 0),
+			},
+			options: [
+				{
+					id: 'instance',
+					type: 'dropdown',
+					label: 'Instance',
+					default: self.lexi?.instanceList[0]?.id ?? 'No available instances',
+					choices: self.lexi?.instanceList ?? [],
+					allowCustom: true,
+					tooltip: 'Varible must return an instance id',
+				},
+				{
+					id: 'parameters',
+					type: 'dropdown',
+					label: 'Parameter',
+					default: 'lexiName',
+					choices: [
+						{ id: 'all_caps', label: 'All Caps' },
+						{ id: 'applause_events', label: 'Applause Events' },
+						{ id: 'audio_events', label: 'Audio Events' },
+						{ id: 'base_model', label: 'Base Model' },
+						{ id: 'base_row', label: 'Base Row' },
+						{ id: 'cc_service', label: 'CC Service' },
+						{ id: 'col_indent', label: 'Columns to Indent' },
+						{ id: 'col_width', label: 'Column Width' },
+						{ id: 'custom_model', label: 'Custom Model' },
+						{ id: 'diarization_style', label: 'Diarization Style' },
+						{ id: 'disfluency_filter', label: 'Disfluency Filter' },
+						{ id: 'display_style', label: 'Display Style' },
+						{ id: 'engine', label: 'Engine' },
+						{ id: 'erase_screen', label: 'Erase Screen' },
+						{ id: 'icapaccesscode', label: 'iCap Access Code' },
+						{ id: 'max_delay', label: 'Max Delay' },
+						{ id: 'num_channels_audio', label: 'Multi-Track: Number of Audio Channels' },
+						{ id: 'speaker_label', label: 'Multi-Track: Speaker Labels' },
+						{ id: 'music_events', label: 'Music Events' },
+						{ id: 'laughter_events', label: 'Laughter Events' },
+						{ id: 'lexiName', label: 'Name' },
+						{ id: 'num_rows', label: 'Number of Caption Rows' },
+						{ id: 'use_newfor', label: 'Output Mode (Use Newfor)' },
+						{ id: 'profanity_filter', label: 'Profanity Filter' },
+						{ id: 'teletext_page', label: 'Teletext Page' },
+						{ id: 'timeout', label: 'Timeout' },
+						{ id: 'vision_positioning', label: 'Vision Positioning' },
+					],
+					allowCustom: false,
+					tooltip: 'Select parameters to modify',
+				},
+				{
+					id: 'lexiName',
+					type: 'textinput',
+					label: 'Name',
+					default: '',
+					useVariables: { local: true },
+					required: false,
+					tooltip: 'The LEXI Live instance name',
+					isVisible: (options) => {
+						return options.parameters == 'lexiName'
+					},
+				},
+				{
+					id: 'engine',
+					type: 'dropdown',
+					label: 'Engine',
+					default: self.lexi.engines[0]?.id ?? 'No available engines',
+					choices: self.lexi.engines ?? [],
+					allowCustom: false,
+					required: false,
+					tooltip: 'The LEXI Live engine name',
+					isVisible: (options) => {
+						return options.parameters == 'engine'
+					},
+				},
+				{
+					id: 'base_model',
+					type: 'dropdown',
+					label: 'Base Model',
+					default: self.lexi.baseModels[0]?.id ?? 'No available language models',
+					choices: self.lexi.baseModels ?? [],
+					allowCustom: false,
+					required: false,
+					tooltip: 'The base language model to use',
+					isVisible: (options) => {
+						return options.parameters == 'base_model'
+					},
+				},
+				{
+					id: 'custom_model',
+					type: 'dropdown',
+					label: 'Custom Model',
+					default: self.lexi.customModels[0]?.id ?? 'No available custom models',
+					choices: self.lexi.customModels ?? [],
+					allowCustom: false,
+					required: false,
+					tooltip: 'The custom voice model to use',
+					isVisible: (options) => {
+						return options.parameters == 'custom_model'
+					},
+				},
+				{
+					id: 'diarization_style',
+					type: 'dropdown',
+					label: 'Diarization Style',
+					default: 'CHEVRON_NEWLINE',
+					choices: [
+						{ id: 'COLOR_CHANGE', label: 'Color Change' },
+						{ id: 'CHEVRON_NEWLINE', label: 'Chevron Newline' },
+						{ id: 'DASH_NEWLINE', label: 'Dash Newline' },
+					],
+					allowCustom: false,
+					required: false,
+					tooltip: 'The speaker change style to use. This setting is only available for the Lexi 3.0 engine.',
+					isVisible: (options) => {
+						return options.parameters == 'diarization_style'
+					},
+				},
+				{
+					id: 'audio_events',
+					type: 'checkbox',
+					label: 'Audio Events',
+					default: true,
+					tooltip: 'Enables identification of audio events in CC output.',
+					isVisible: (options) => {
+						return options.parameters == 'audio_events'
+					},
+				},
+				{
+					id: 'music_events',
+					type: 'checkbox',
+					label: 'Music Events',
+					default: true,
+					tooltip: 'Enables identification of music audio events in CC output.',
+					isVisible: (options) => {
+						return options.parameters == 'music_events'
+					},
+				},
+				{
+					id: 'applause_events',
+					type: 'checkbox',
+					label: 'Applause Events',
+					default: true,
+					tooltip: 'Enables identification of music applause audio events in CC output.',
+					isVisible: (options) => {
+						return options.parameters == 'applause_events'
+					},
+				},
+				{
+					id: 'laughter_events',
+					type: 'checkbox',
+					label: 'Laughter Events',
+					default: true,
+					tooltip: 'Enables identification of music laughter audio events in CC output.',
+					isVisible: (options) => {
+						return options.parameters == 'laughter_events'
+					},
+				},
+				{
+					id: 'cc_service',
+					type: 'textinput',
+					label: 'CC Service',
+					default: '1',
+					useVariables: { local: true },
+					required: false,
+					tooltip: 'The caption service to use (1 - 6).',
+					isVisible: (options) => {
+						return options.parameters == 'cc_service'
+					},
+				},
+				{
+					id: 'use_newfor',
+					type: 'dropdown',
+					label: 'Output Mode',
+					default: false,
+					choices: [
+						{ id: false, label: '608/708' },
+						{ id: true, label: 'Newfor/Teletext' },
+					],
+					tooltip: `Engages the "Newfor/Teletext" output mode. If not specified, the default output mode is "608/708". Please choose in accordance with your caption encoder's "CC Output Format" setting, as well as the international region in which your content will be viewed.`,
+					isVisible: (options) => {
+						return options.parameters == 'use_newfor'
+					},
+				},
+				{
+					id: 'teletext_page',
+					type: 'textinput',
+					label: 'Teletext Page',
+					default: '801',
+					useVariables: { local: true },
+					required: false,
+					tooltip:
+						'The Teletext page number to be used with the "Newfor/Teletext" output mode. In the format of: [magazine number][page number (tens)][page number (units)]',
+					isVisible: (options) => {
+						return options.parameters == 'teletext_page'
+					},
+				},
+				{
+					id: 'display_style',
+					type: 'dropdown',
+					label: 'Display Style',
+					default: 'rollup',
+					choices: [
+						{ id: 'rollup', label: 'Roll-Up' },
+						{ id: 'popon', label: 'Pop-On' },
+					],
+					allowCustom: false,
+					required: false,
+					tooltip: 'Determines the caption advance style.',
+					isVisible: (options) => {
+						return options.parameters == 'display_style'
+					},
+				},
+				{
+					id: 'all_caps',
+					type: 'checkbox',
+					label: 'All Caps',
+					default: false,
+					tooltip: `Whether captions should be rendered in ALL CAPS or sentence case.`,
+					isVisible: (options) => {
+						return options.parameters == 'all_caps'
+					},
+				},
+				{
+					id: 'erase_screen',
+					type: 'checkbox',
+					label: 'Erase Screen',
+					default: false,
+					tooltip: `Erase the screen when Lexi enters standby or is stopped`,
+					isVisible: (options) => {
+						return options.parameters == 'erase_screen'
+					},
+				},
+				{
+					id: 'num_rows',
+					type: 'dropdown',
+					label: 'Number of Caption Rows',
+					default: '2',
+					choices: [
+						{ id: '2', label: '2' },
+						{ id: '3', label: '3' },
+						{ id: '4', label: '4' },
+					],
+					allowCustom: false,
+					required: false,
+					tooltip: 'The number of caption rows to use in output captions.',
+					isVisible: (options) => {
+						return options.parameters == 'num_rows'
+					},
+				},
+				{
+					id: 'base_row',
+					type: 'dropdown',
+					label: 'Base Row',
+					default: '13',
+					choices: [
+						{ id: '2', label: '2 (608/708 Only)' },
+						{ id: '3', label: '3' },
+						{ id: '4', label: '4' },
+						{ id: '5', label: '5' },
+						{ id: '6', label: '6' },
+						{ id: '7', label: '7' },
+						{ id: '8', label: '8' },
+						{ id: '9', label: '9' },
+						{ id: '10', label: '10' },
+						{ id: '11', label: '11' },
+						{ id: '12', label: '12' },
+						{ id: '13', label: '13' },
+						{ id: '14', label: '14' },
+						{ id: '15', label: '15' },
+						{ id: '16', label: '16 (Newfor/Teletext Only)' },
+						{ id: '17', label: '17 (Newfor/Teletext Only)' },
+						{ id: '18', label: '18 (Newfor/Teletext Only)' },
+						{ id: '19', label: '19 (Newfor/Teletext Only)' },
+						{ id: '20', label: '20 (Newfor/Teletext Only)' },
+						{ id: '21', label: '21 (Newfor/Teletext Only)' },
+						{ id: '22', label: '22 (Newfor/Teletext Only)' },
+						{ id: '23', label: '23 (Newfor/Teletext Only)' },
+						{ id: '24', label: '24 (Newfor/Teletext Only)' },
+					],
+					allowCustom: false,
+					required: false,
+					tooltip:
+						'The base caption row for display. Please note that the base row will be the maximum of this value and "num_rows".',
+					isVisible: (options) => {
+						return options.parameters == 'base_row'
+					},
+				},
+				{
+					id: 'col_indent',
+					type: 'dropdown',
+					label: 'Columns to Indent',
+					default: '1',
+					choices: [
+						{ id: '0', label: '0' },
+						{ id: '1', label: '1' },
+						{ id: '2', label: '2' },
+						{ id: '3', label: '3' },
+						{ id: '4', label: '4' },
+						{ id: '5', label: '5' },
+						{ id: '6', label: '6' },
+						{ id: '7', label: '7' },
+						{ id: '8', label: '8' },
+						{ id: '9', label: '9' },
+						{ id: '10', label: '10' },
+						{ id: '11', label: '11' },
+						{ id: '12', label: '12' },
+						{ id: '13', label: '13' },
+						{ id: '14', label: '14' },
+						{ id: '15', label: '15' },
+						{ id: '16', label: '16' },
+						{ id: '17', label: '17' },
+						{ id: '18', label: '18' },
+						{ id: '19', label: '19' },
+						{ id: '20', label: '20' },
+						{ id: '21', label: '21' },
+						{ id: '22', label: '22' },
+						{ id: '23', label: '23' },
+						{ id: '24', label: '24' },
+						{ id: '25', label: '25' },
+						{ id: '26', label: '26' },
+						{ id: '27', label: '27' },
+					],
+					allowCustom: false,
+					required: false,
+					tooltip: 'The number of columns to indent from the left-hand side of screen.',
+					isVisible: (options) => {
+						return options.parameters == 'col_indent'
+					},
+				},
+				{
+					id: 'col_width',
+					type: 'dropdown',
+					label: 'Column Width',
+					default: '1',
+					choices: [
+						{ id: '16', label: '16 Characters' },
+						{ id: '20', label: '20 Characters' },
+						{ id: '24', label: '24 Characters' },
+						{ id: '28', label: '28 Characters' },
+						{ id: '32', label: '32 Characters' },
+						{ id: '36', label: '36 Characters *' },
+					],
+					allowCustom: false,
+					required: false,
+					tooltip:
+						'Set the amount of characters per row of text. * 36 character rows may not be compatible with North American broadcast workflows',
+					isVisible: (options) => {
+						return options.parameters == 'col_width'
+					},
+				},
+				{
+					id: 'icapaccesscode',
+					type: 'textinput',
+					label: 'iCap Access Code',
+					default: '',
+					useVariables: { local: true },
+					required: false,
+					tooltip: 'The iCap Access Code to use for caption delivery.',
+					isVisible: (options) => {
+						return options.parameters == 'icapaccesscode'
+					},
+				},
+				{
+					id: 'timeout',
+					type: 'dropdown',
+					label: 'Timeout',
+					default: 600,
+					choices: [
+						{ id: 600, label: '10 Minutes' },
+						{ id: 1200, label: '20 Minutes' },
+						{ id: 1800, label: '30 Minutes' },
+						{ id: 2400, label: '40 Minutes' },
+						{ id: 3000, label: '50 Minutes' },
+						{ id: 3600, label: '60 Minutes' },
+						{ id: -1, label: 'None' },
+					],
+					allowCustom: false,
+					required: false,
+					tooltip: 'Silence allowed before iCap will auto-terminate a job (to reduce billing charges).',
+					isVisible: (options) => {
+						return options.parameters == 'timeout'
+					},
+				},
+				{
+					id: 'profanity_filter',
+					type: 'checkbox',
+					label: 'Profanity Filter',
+					default: false,
+					tooltip: `Engages a basic profanity filter.`,
+					isVisible: (options) => {
+						return options.parameters == 'profanity_filter'
+					},
+				},
+				{
+					id: 'disfluency_filter',
+					type: 'checkbox',
+					label: 'Disfluency Filter',
+					default: false,
+					tooltip: `Enable to filter out “um”, “uh”, “ah”, etc.`,
+					isVisible: (options) => {
+						return options.parameters == 'disfluency_filter'
+					},
+				},
+				{
+					id: 'vision_positioning',
+					type: 'checkbox',
+					label: 'Vision Positioning',
+					default: false,
+					tooltip: `Engages a basic facial and text detector to attempt to keep captions from obscuring faces and Character Generator elements.`,
+					isVisible: (options) => {
+						return options.parameters == 'vision_positioning'
+					},
+				},
+				{
+					id: 'num_channels_audio',
+					type: 'dropdown',
+					label: 'Number of Audio Channels',
+					default: '2',
+					choices: [
+						{ id: '0', label: 'Off' },
+						{ id: '2', label: '2' },
+						{ id: '3', label: '3' },
+						{ id: '4', label: '4' },
+						{ id: '5', label: '5' },
+						{ id: '6', label: '6' },
+						{ id: '7', label: '7' },
+						{ id: '8', label: '8' },
+					],
+					allowCustom: false,
+					required: false,
+					tooltip: 'Sets number of discreet speaker feeds are being used for speaker identification.',
+					isVisible: (options) => {
+						return options.parameters == 'num_channels_audio'
+					},
+				},
+				{
+					id: 'speaker_label',
+					type: 'textinput',
+					label: 'Speaker Labels',
+					default: '',
+					useVariables: { local: true },
+					required: false,
+					tooltip:
+						'Comma seperated array of strings to use as speaker identification labels. I.e. >> Fred:, >> Barney:. Should match the number of audio channels.',
+					isVisible: (options) => {
+						return options.parameters == 'speaker_label'
+					},
+				},
+				{
+					id: 'max_delay',
+					type: 'textinput',
+					label: 'Maximum Delay',
+					default: '3',
+					useVariables: { local: true },
+					required: false,
+					tooltip:
+						'Sets the maximum number of seconds between receiving audio input and producing CC output. Higher max_delay values may yield greater recognition accuracy. Values to use: 0.7 through 10',
+					isVisible: (options) => {
+						return options.parameters == 'max_delay'
+					},
+				},
+			],
+			callback: async (feedback, context) => {
+				let instance = await context.parseVariablesInString(feedback.options.instance)
+				if (instance === undefined || instance === '' || instance === 'No available instances') {
+					self.log('warn', 'No instance provided to Instance State')
+					return undefined
+				}
+				const instanceSettings = self.lexi.instances.get(instance)
+				if (instanceSettings === undefined) return undefined
+				let speakerLabel = ''
+				if (Array.isArray(instanceSettings.speaker_label)) {
+					for (let i = 0; i < instanceSettings.speaker_label.length; i++) {
+						speakerLabel =
+							speakerLabel === ''
+								? instanceSettings.speaker_label[i]
+								: speakerLabel + ', ' + instanceSettings.speaker_label[i]
+					}
+				} else {
+					speakerLabel = instanceSettings.speaker_label
+				}
+				switch (feedback.options.parameters) {
+					case 'lexiName':
+						return instanceSettings.name == (await context.parseVariablesInString(feedback.options.lexiName))
+					case 'engine':
+						return instanceSettings.engine == (await context.parseVariablesInString(feedback.options.engine))
+					case 'base_model':
+						return instanceSettings.base_model == (await context.parseVariablesInString(feedback.options.base_model))
+					case 'custom_model':
+						return (
+							instanceSettings.custom_model == (await context.parseVariablesInString(feedback.options.custom_model))
+						)
+					case 'diarization_style':
+						return instanceSettings.diarization_style == feedback.options.diarization_style
+					case 'audio_events':
+						return instanceSettings.audio_events == feedback.options.audio_events
+					case 'music_events':
+						return instanceSettings.music_events == feedback.options.music_events
+					case 'applause_events':
+						return instanceSettings.applause_events == feedback.options.applause_events
+					case 'laughter_events':
+						return instanceSettings.laughter_events == feedback.options.laughter_events
+					case 'cc_service':
+						return (
+							instanceSettings.cc_service ==
+							parseInt(await context.parseVariablesInString(feedback.options.cc_service)).toString()
+						)
+					case 'use_newfor':
+						return instanceSettings.use_newfor == feedback.options.use_newfor
+					case 'teletext_page':
+						return (
+							instanceSettings.teletext_page == (await context.parseVariablesInString(feedback.options.teletext_page))
+						)
+					case 'display_style':
+						return instanceSettings.display_style == feedback.options.display_style
+					case 'all_caps':
+						return instanceSettings.all_caps == feedback.options.all_caps
+					case 'erase_screen':
+						return instanceSettings.erase_screen == feedback.options.erase_screen.toString()
+					case 'num_rows':
+						return instanceSettings.num_rows == feedback.options.num_rows
+					case 'base_row':
+						return instanceSettings.base_row == feedback.options.base_row
+					case 'col_indent':
+						return instanceSettings.col_indent == feedback.options.col_indent
+					case 'col_width':
+						return instanceSettings.col_width == feedback.options.col_width
+					case 'icapaccesscode':
+						return (
+							instanceSettings.icapaccesscode == (await context.parseVariablesInString(feedback.options.icapaccesscode))
+						)
+					case 'timeout':
+						return instanceSettings.timeout == feedback.options.timeout
+					case 'profanity_filter':
+						return instanceSettings.profanity_filter == feedback.options.profanity_filter
+					case 'disfluency_filter':
+						return instanceSettings.disfluency_filter == feedback.options.disfluency_filter
+					case 'vision_positioning':
+						return instanceSettings.vision_positioning == feedback.options.vision_positioning
+					case 'num_channels_audio':
+						return instanceSettings.num_channels_audio == feedback.options.num_channels_audio
+					case 'speaker_label':
+						return speakerLabel == (await context.parseVariablesInString(feedback.options.speaker_label))
+					case 'max_delay':
+						return (
+							instanceSettings.max_delay ==
+							parseFloat(await context.parseVariablesInString(feedback.options.max_delay)).toFixed(1)
+						)
+					default:
+						return false
+				}
+			},
+			learn: async ({ options }, context) => {
+				const instance = await context.parseVariablesInString(options.instance)
+				if (instance === undefined || instance === '' || instance === 'No available instances') {
+					self.log('warn', 'No instance provided to Instance Configuration - Learn')
+					return undefined
+				}
+				const instanceSettings = self.lexi.instances.get(instance)
+				if (instanceSettings === undefined) return undefined
+				const newSettings = {}
+				if (instanceSettings.all_caps !== undefined) newSettings.all_caps = instanceSettings.all_caps
+				if (instanceSettings.applause_events !== undefined)
+					newSettings.applause_events = instanceSettings.applause_events
+				if (instanceSettings.audio_events !== undefined) newSettings.audio_events = instanceSettings.audio_events
+				if (instanceSettings.base_model !== undefined) newSettings.base_model = instanceSettings.base_model
+				if (instanceSettings.base_row !== undefined) newSettings.base_row = instanceSettings.base_row
+				if (instanceSettings.cc_service !== undefined) newSettings.cc_service = instanceSettings.cc_service
+				if (instanceSettings.col_indent !== undefined) newSettings.col_indent = instanceSettings.col_indent
+				if (instanceSettings.col_width !== undefined) newSettings.col_width = instanceSettings.col_width
+				if (instanceSettings.custom_model !== undefined) newSettings.custom_model = instanceSettings.custom_model
+				if (instanceSettings.diarization_style !== undefined)
+					newSettings.diarization_style = instanceSettings.diarization_style
+				if (instanceSettings.disfluency_filter !== undefined)
+					newSettings.disfluency_filter = instanceSettings.disfluency_filter
+				if (instanceSettings.display_style !== undefined) newSettings.display_style = instanceSettings.display_style
+				if (instanceSettings.engine !== undefined) newSettings.engine = instanceSettings.engine
+				if (instanceSettings.erase_screen !== undefined)
+					newSettings.erase_screen = instanceSettings.erase_screen === 'true' || instanceSettings.erase_screen === true
+				if (instanceSettings.icapaccesscode !== undefined) newSettings.icapaccesscode = instanceSettings.icapaccesscode
+				if (instanceSettings.laughter_events !== undefined)
+					newSettings.laughter_events = instanceSettings.laughter_events
+				if (instanceSettings.max_delay !== undefined) newSettings.max_delay = instanceSettings.max_delay
+				if (instanceSettings.music_events !== undefined) newSettings.music_events = instanceSettings.music_events
+				if (instanceSettings.name !== undefined) newSettings.lexiName = instanceSettings.name
+				if (instanceSettings.num_channels_audio !== undefined)
+					newSettings.num_channels_audio = instanceSettings.num_channels_audio
+				if (instanceSettings.num_rows !== undefined) newSettings.num_rows = instanceSettings.num_rows
+				if (instanceSettings.profanity_filter !== undefined)
+					newSettings.profanity_filter = instanceSettings.profanity_filter
+				if (instanceSettings.speaker_label !== undefined) {
+					if (Array.isArray(instanceSettings.speaker_label)) {
+						let label = ''
+						for (let i = 0; i < instanceSettings.speaker_label.length; i++) {
+							label =
+								label === '' ? instanceSettings.speaker_label[i] : label + ', ' + instanceSettings.speaker_label[i]
+						}
+						newSettings.speaker_label = label
+					} else {
+						newSettings.speaker_label = instanceSettings.speaker_label
+					}
+				}
+				if (instanceSettings.teletext_page !== undefined)
+					newSettings.teletext_page = instanceSettings.teletext_page.toString()
+				if (instanceSettings.timeout !== undefined) newSettings.timeout = instanceSettings.timeout
+				if (instanceSettings.use_newfor !== undefined) newSettings.use_newfor = instanceSettings.use_newfor
+				if (instanceSettings.vision_positioning !== undefined)
+					newSettings.vision_positioning = instanceSettings.vision_positioning
+				if (Object.keys(newSettings).length === 0) return undefined
+				return {
+					...options,
+					...newSettings,
+				}
 			},
 		},
 	})
