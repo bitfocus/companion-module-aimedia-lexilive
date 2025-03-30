@@ -108,7 +108,7 @@ export default function (self) {
 					tooltip: 'Appears in Lexi Logs',
 					choices: [
 						{ id: 'User initialized', label: 'User initialized' },
-						{ id: 'Scheduled Start', label: 'Scheduled End' },
+						{ id: 'Scheduled End', label: 'Scheduled End' },
 					],
 				},
 			],
