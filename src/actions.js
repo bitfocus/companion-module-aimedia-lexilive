@@ -678,7 +678,7 @@ export default function (self) {
 					if (page.length === 3) {
 						params.teletext_page = page
 					} else {
-						self.log('warn', `Invalid page valid, must have a length of 3: ${page}. Length: ${page.length}`)
+						self.log('warn', `Invalid page, must have a length of 3: ${page}. Length: ${page.length}`)
 					}
 				}
 				if (options.parameters.includes('display_style')) {
