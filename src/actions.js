@@ -69,6 +69,7 @@ export default function (self) {
 						const response = await self.axios.post(
 							`/live/v2/instances/${instance}/turn_on`,
 							JSON.stringify({ initialization_origin: origin, initialization_reason: reason }),
+							{ params: { get_history: 0 } },
 						)
 						self.logResponse(response)
 					} catch (error) {
@@ -128,6 +129,7 @@ export default function (self) {
 						const response = await self.axios.post(
 							`/live/v2/instances/${instance}/turn_off`,
 							JSON.stringify({ termination_origin: origin, termination_reason: reason }),
+							{ params: { get_history: 0 } },
 						)
 						self.logResponse(response)
 					} catch (error) {
@@ -674,11 +676,14 @@ export default function (self) {
 					params.use_newfor = options.use_newfor
 				}
 				if (options.parameters.includes('teletext_page')) {
-					const page = await context.parseVariablesInString(options.teletext_page)
-					if (page.length === 3) {
-						params.teletext_page = page
+					const page = parseInt(await context.parseVariablesInString(options.teletext_page), 16)
+					if (!isNaN(page) && page.toString(16).length === 3) {
+						params.teletext_page = page.toString(16)
 					} else {
-						self.log('warn', `Invalid page valid, must have a length of 3: ${page}. Length: ${page.length}`)
+						self.log(
+							'warn',
+							`Invalid page, must be a 3 digit hex number. Page Number: ${page.toString(16)}. Length: ${page.toString(16).length}`,
+						)
 					}
 				}
 				if (options.parameters.includes('display_style')) {
