@@ -676,11 +676,14 @@ export default function (self) {
 					params.use_newfor = options.use_newfor
 				}
 				if (options.parameters.includes('teletext_page')) {
-					const page = await context.parseVariablesInString(options.teletext_page)
-					if (page.length === 3 && !isNaN(parseInt(page, 16))) {
-						params.teletext_page = page
+					const page = parseInt(await context.parseVariablesInString(options.teletext_page), 16)
+					if (!isNaN(page) && page.toString(16).length === 3) {
+						params.teletext_page = page.toString(16)
 					} else {
-						self.log('warn', `Invalid page, must have a length of 3: ${page}. Length: ${page.length}`)
+						self.log(
+							'warn',
+							`Invalid page, must be a 3 digit hex number. Page Number: ${page.toString(16)}. Length: ${page.toString(16).length}`,
+						)
 					}
 				}
 				if (options.parameters.includes('display_style')) {
