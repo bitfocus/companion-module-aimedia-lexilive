@@ -69,6 +69,7 @@ export default function (self) {
 						const response = await self.axios.post(
 							`/live/v2/instances/${instance}/turn_on`,
 							JSON.stringify({ initialization_origin: origin, initialization_reason: reason }),
+							{ params: { get_history: 0 } },
 						)
 						self.logResponse(response)
 					} catch (error) {
@@ -128,6 +129,7 @@ export default function (self) {
 						const response = await self.axios.post(
 							`/live/v2/instances/${instance}/turn_off`,
 							JSON.stringify({ termination_origin: origin, termination_reason: reason }),
+							{ params: { get_history: 0 } },
 						)
 						self.logResponse(response)
 					} catch (error) {
@@ -675,7 +677,7 @@ export default function (self) {
 				}
 				if (options.parameters.includes('teletext_page')) {
 					const page = await context.parseVariablesInString(options.teletext_page)
-					if (page.length === 3) {
+					if (page.length === 3 && !isNaN(parseInt(page, 16))) {
 						params.teletext_page = page
 					} else {
 						self.log('warn', `Invalid page, must have a length of 3: ${page}. Length: ${page.length}`)
