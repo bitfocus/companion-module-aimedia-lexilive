@@ -1,3 +1,12 @@
+/**
+ * Remove illegal characters from variable Ids
+ * @param {string} id variable id to sanitize
+ * @param {'' | '.' | '-' | '_'} substitute Char to replace illegal characters
+ * @since 1.2.4
+ */
+
+const sanitiseVariableId = (id, substitute = '_') => id.replaceAll(/[^a-zA-Z0-9-_.]/gm, substitute)
+
 export async function getEngines() {
 	if (this.axios === undefined) {
 		return undefined
@@ -111,10 +120,10 @@ export async function getInstances() {
 				this.lexi.instanceList.push({ id: instance.instance_id, label: instance.settings.name })
 				this.updateInstanceSettings(instance.instance_id, instance.settings)
 				this.lexi.instanceVariables.push({
-					variableId: `instance_${instance.instance_id}`,
+					variableId: sanitiseVariableId(`instance_${instance.instance_id}`),
 					name: `${instance.instance_id} Name`,
 				})
-				this.lexi.instanceNames[`instance_${instance.instance_id}`] = instance.settings.name
+				this.lexi.instanceNames[sanitiseVariableId(`instance_${instance.instance_id}`)] = instance.settings.name
 			}
 		})
 		this.checkFeedbacks()
