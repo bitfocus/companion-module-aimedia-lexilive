@@ -57,9 +57,9 @@ export default function (self) {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				const instance = await context.parseVariablesInString(options.instance)
-				const origin = await context.parseVariablesInString(options.init_origin)
-				const reason = await context.parseVariablesInString(options.init_reason)
+				const instance = (await context.parseVariablesInString(options.instance)).trim()
+				const origin = (await context.parseVariablesInString(options.init_origin)).trim()
+				const reason = (await context.parseVariablesInString(options.init_reason)).trim()
 				if (instance === undefined || instance === '' || instance === 'No available instances') {
 					self.log('warn', 'No instance provided to Instance Start')
 					return undefined
@@ -117,9 +117,9 @@ export default function (self) {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				const instance = await context.parseVariablesInString(options.instance)
-				const origin = await context.parseVariablesInString(options.term_origin)
-				const reason = await context.parseVariablesInString(options.term_reason)
+				const instance = (await context.parseVariablesInString(options.instance)).trim()
+				const origin = (await context.parseVariablesInString(options.term_origin)).trim()
+				const reason = (await context.parseVariablesInString(options.term_reason)).trim()
 				if (instance === undefined || instance === '' || instance === 'No available instances') {
 					self.log('warn', 'No instance provided to Instance Stop')
 					return undefined
@@ -611,7 +611,7 @@ export default function (self) {
 				if (self.axios === undefined || options.parameters.length === 0) {
 					return undefined
 				}
-				const instance = await context.parseVariablesInString(options.instance)
+				const instance = (await context.parseVariablesInString(options.instance)).trim()
 				if (instance === undefined || instance === '' || instance === 'No available instances') {
 					self.log('warn', 'No instance provided to Modfy Instance')
 					return undefined
@@ -622,10 +622,10 @@ export default function (self) {
 				}
 				const params = {}
 				if (options.parameters.includes('lexiName')) {
-					params.name = await context.parseVariablesInString(options.lexiName)
+					params.name = (await context.parseVariablesInString(options.lexiName)).trim()
 				}
 				if (options.parameters.includes('engine')) {
-					const engine = await context.parseVariablesInString(options.engine)
+					const engine = (await context.parseVariablesInString(options.engine)).trim()
 					if (engine !== 'No available engines' && engine !== '') {
 						params.engine = engine
 					} else {
@@ -633,7 +633,7 @@ export default function (self) {
 					}
 				}
 				if (options.parameters.includes('base_model')) {
-					const base_model = await context.parseVariablesInString(options.base_model)
+					const base_model = (await context.parseVariablesInString(options.base_model)).trim()
 					if (base_model !== 'No available language models' && base_model !== '') {
 						params.base_model = base_model
 					} else {
@@ -641,7 +641,7 @@ export default function (self) {
 					}
 				}
 				if (options.parameters.includes('custom_model')) {
-					const custom_model = await context.parseVariablesInString(options.custom_model)
+					const custom_model = (await context.parseVariablesInString(options.custom_model)).trim()
 					if (custom_model !== 'No available custom models' && custom_model !== '') {
 						params.custom_model = custom_model
 						params.custom_models = [custom_model]
@@ -708,7 +708,7 @@ export default function (self) {
 					params.col_width = options.col_width
 				}
 				if (options.parameters.includes('icapaccesscode')) {
-					params.icapaccesscode = await context.parseVariablesInString(options.icapaccesscode)
+					params.icapaccesscode = (await context.parseVariablesInString(options.icapaccesscode)).trim()
 				}
 				if (options.parameters.includes('timeout')) {
 					params.timeout = options.timeout

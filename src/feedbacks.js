@@ -1,14 +1,21 @@
 import { combineRgb } from '@companion-module/base'
 
+const colours = {
+	black: combineRgb(0, 0, 0),
+	red: combineRgb(255, 0, 0),
+}
+
+const fbStyle = {
+	bgcolor: colours.black,
+	color: colours.red,
+}
+
 export default async function (self) {
 	self.setFeedbackDefinitions({
 		instanceState: {
 			name: 'Instance State',
 			type: 'boolean',
-			defaultStyle: {
-				bgcolor: combineRgb(255, 0, 0),
-				color: combineRgb(0, 0, 0),
-			},
+			defaultStyle: fbStyle,
 			options: [
 				{
 					id: 'instance',
@@ -44,10 +51,7 @@ export default async function (self) {
 		instanceConfig: {
 			name: 'Instance Configuration',
 			type: 'boolean',
-			defaultStyle: {
-				bgcolor: combineRgb(255, 0, 0),
-				color: combineRgb(0, 0, 0),
-			},
+			defaultStyle: fbStyle,
 			options: [
 				{
 					id: 'instance',
@@ -521,7 +525,7 @@ export default async function (self) {
 				},
 			],
 			callback: async (feedback, context) => {
-				let instance = await context.parseVariablesInString(feedback.options.instance)
+				let instance = (await context.parseVariablesInString(feedback.options.instance)).trim()
 				if (instance === undefined || instance === '' || instance === 'No available instances') {
 					self.log('warn', 'No instance provided to Instance State')
 					return undefined
@@ -541,14 +545,17 @@ export default async function (self) {
 				}
 				switch (feedback.options.parameters) {
 					case 'lexiName':
-						return instanceSettings.name == (await context.parseVariablesInString(feedback.options.lexiName))
+						return instanceSettings.name == (await context.parseVariablesInString(feedback.options.lexiName)).trim()
 					case 'engine':
-						return instanceSettings.engine == (await context.parseVariablesInString(feedback.options.engine))
+						return instanceSettings.engine == (await context.parseVariablesInString(feedback.options.engine)).trim()
 					case 'base_model':
-						return instanceSettings.base_model == (await context.parseVariablesInString(feedback.options.base_model))
+						return (
+							instanceSettings.base_model == (await context.parseVariablesInString(feedback.options.base_model)).trim()
+						)
 					case 'custom_model':
 						return (
-							instanceSettings.custom_model == (await context.parseVariablesInString(feedback.options.custom_model))
+							instanceSettings.custom_model ==
+							(await context.parseVariablesInString(feedback.options.custom_model)).trim()
 						)
 					case 'diarization_style':
 						return instanceSettings.diarization_style == feedback.options.diarization_style
@@ -569,7 +576,8 @@ export default async function (self) {
 						return instanceSettings.use_newfor == feedback.options.use_newfor
 					case 'teletext_page':
 						return (
-							instanceSettings.teletext_page == (await context.parseVariablesInString(feedback.options.teletext_page))
+							instanceSettings.teletext_page ==
+							(await context.parseVariablesInString(feedback.options.teletext_page)).trim()
 						)
 					case 'display_style':
 						return instanceSettings.display_style == feedback.options.display_style
@@ -587,7 +595,8 @@ export default async function (self) {
 						return instanceSettings.col_width == feedback.options.col_width
 					case 'icapaccesscode':
 						return (
-							instanceSettings.icapaccesscode == (await context.parseVariablesInString(feedback.options.icapaccesscode))
+							instanceSettings.icapaccesscode ==
+							(await context.parseVariablesInString(feedback.options.icapaccesscode)).trim()
 						)
 					case 'timeout':
 						return instanceSettings.timeout == feedback.options.timeout
@@ -600,7 +609,7 @@ export default async function (self) {
 					case 'num_channels_audio':
 						return instanceSettings.num_channels_audio == feedback.options.num_channels_audio
 					case 'speaker_label':
-						return speakerLabel == (await context.parseVariablesInString(feedback.options.speaker_label))
+						return speakerLabel == (await context.parseVariablesInString(feedback.options.speaker_label)).trim()
 					case 'max_delay':
 						return (
 							instanceSettings.max_delay ==
