@@ -1,3 +1,5 @@
+import { orderBy } from 'lodash'
+
 /**
  * Remove illegal characters from variable Ids
  * @param {string} id variable id to sanitize
@@ -28,6 +30,7 @@ export async function getEngines() {
 					this.lexi.engines.push({ id: engine.name, label: engine?.display_name ?? engine.name })
 				}
 			})
+			this.lexi.engines = orderBy(this.lexi.engines, ['label'], ['asc'])
 		}
 		return response.data
 	} catch (error) {
@@ -59,6 +62,7 @@ export async function getBaseModels() {
 				})
 			}
 		})
+		this.lexi.baseModels = orderBy(this.lexi.baseModels, ['label'], ['asc'])
 		//this.log('info', `Base Models: ${JSON.stringify(response.data)}`)
 		return response.data
 	} catch (error) {
@@ -90,6 +94,7 @@ export async function getCustomModels() {
 					this.lexi.customModels.push({ id: model.modelID, label: displayName })
 				}
 			})
+			this.lexi.customModels = orderBy(this.lexi.customModels, ['label'], ['asc'])
 		}
 		return response.data
 	} catch (error) {
@@ -126,6 +131,7 @@ export async function getInstances() {
 				this.lexi.instanceNames[sanitiseVariableId(`instance_${instance.instance_id}`)] = instance.settings.name
 			}
 		})
+		this.lexi.instanceList = orderBy(this.lexi.instanceList, ['label'], ['asc'])
 		this.checkFeedbacks()
 		return this.lexi.instanceList
 	} catch (error) {
