@@ -24,6 +24,9 @@ Instance Configuration
 
 ## Version History
 
+### Version 1.2.5
+- Password is secret-text type
+
 ### Version 1.2.4
 - Sort dropdowns in Actions & Feedbacks (Instances, Base Models, Custom Models)
 - Trim variables after parsing

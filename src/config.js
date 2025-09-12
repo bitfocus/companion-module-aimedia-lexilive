@@ -12,8 +12,8 @@ export function getConfigFields() {
 			default: '',
 		},
 		{
-			type: 'textinput',
-			id: 'pass',
+			type: 'secret-text',
+			id: 'password',
 			label: 'Password',
 			width: 4,
 			regex: Regex.SOMETHING,
