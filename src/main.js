@@ -174,11 +174,6 @@ class LexiLive extends InstanceBase {
 		this.queue.clear()
 		this.initLexi()
 		this.config = config
-		if (this.config.pass !== dummy_password && this.config.pass !== '') {
-			this.config.password = await this.parseVariablesInString(this.config.pass)
-			this.config.pass = dummy_password
-			this.saveConfig(this.config)
-		}
 		this.setupAxios()
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
