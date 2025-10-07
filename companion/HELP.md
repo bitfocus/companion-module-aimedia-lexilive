@@ -24,6 +24,9 @@ Instance Configuration
 
 ## Version History
 
+### Version 1.2.6
+- Manage message queue for better responsiveness
+
 ### Version 1.2.5
 - Password is secret-text type
 
