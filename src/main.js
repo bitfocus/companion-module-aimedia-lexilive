@@ -98,11 +98,16 @@ class LexiLive extends InstanceBase {
 	}
 
 	pollStatus() {
-		this.queue
-			.add(async () => {
-				this.getInstances()
-			})
-			.catch(() => {})
+		if (this.queue.size < 5) {
+			this.queue
+				.add(
+					async () => {
+						this.getInstances()
+					},
+					{ priority: 0 },
+				)
+				.catch(() => {})
+		}
 		this.pollTimer = setTimeout(() => {
 			this.pollStatus()
 		}, pollInterval)

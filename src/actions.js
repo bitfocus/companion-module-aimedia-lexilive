@@ -64,18 +64,21 @@ export default function (self) {
 					self.log('warn', 'No instance provided to Instance Start')
 					return undefined
 				}
-				await self.queue.add(async () => {
-					try {
-						const response = await self.axios.post(
-							`/live/v2/instances/${instance}/turn_on`,
-							JSON.stringify({ initialization_origin: origin, initialization_reason: reason }),
-							{ params: { get_history: 0 } },
-						)
-						self.logResponse(response)
-					} catch (error) {
-						self.logError(error)
-					}
-				})
+				await self.queue.add(
+					async () => {
+						try {
+							const response = await self.axios.post(
+								`/live/v2/instances/${instance}/turn_on`,
+								JSON.stringify({ initialization_origin: origin, initialization_reason: reason }),
+								{ params: { get_history: 0 } },
+							)
+							self.logResponse(response)
+						} catch (error) {
+							self.logError(error)
+						}
+					},
+					{ priority: 2 },
+				)
 			},
 		},
 		instanceStop: {
@@ -124,18 +127,21 @@ export default function (self) {
 					self.log('warn', 'No instance provided to Instance Stop')
 					return undefined
 				}
-				await self.queue.add(async () => {
-					try {
-						const response = await self.axios.post(
-							`/live/v2/instances/${instance}/turn_off`,
-							JSON.stringify({ termination_origin: origin, termination_reason: reason }),
-							{ params: { get_history: 0 } },
-						)
-						self.logResponse(response)
-					} catch (error) {
-						self.logError(error)
-					}
-				})
+				await self.queue.add(
+					async () => {
+						try {
+							const response = await self.axios.post(
+								`/live/v2/instances/${instance}/turn_off`,
+								JSON.stringify({ termination_origin: origin, termination_reason: reason }),
+								{ params: { get_history: 0 } },
+							)
+							self.logResponse(response)
+						} catch (error) {
+							self.logError(error)
+						}
+					},
+					{ priority: 2 },
+				)
 			},
 		},
 		instanceModify: {
@@ -743,14 +749,17 @@ export default function (self) {
 					self.log('warn', `No valid parameters to modify on instance: ${instance}, action aborted`)
 					return undefined
 				}
-				await self.queue.add(async () => {
-					try {
-						const response = await self.axios.patch(`/live/v2/instances/${instance}`, JSON.stringify(params))
-						self.logResponse(response)
-					} catch (error) {
-						self.logError(error)
-					}
-				})
+				await self.queue.add(
+					async () => {
+						try {
+							const response = await self.axios.patch(`/live/v2/instances/${instance}`, JSON.stringify(params))
+							self.logResponse(response)
+						} catch (error) {
+							self.logError(error)
+						}
+					},
+					{ priority: 2 },
+				)
 			},
 			learn: async ({ options }, context) => {
 				const instance = await context.parseVariablesInString(options.instance)

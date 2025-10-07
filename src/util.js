@@ -14,9 +14,12 @@ export async function getEngines() {
 		return undefined
 	}
 	try {
-		const response = await this.queue.add(async () => {
-			return await this.axios.get('/live/v2/engines')
-		})
+		const response = await this.queue.add(
+			async () => {
+				return await this.axios.get('/live/v2/engines')
+			},
+			{ priority: 1 },
+		)
 		this.logResponse(response)
 		if (response.data === undefined) {
 			this.log('warn', 'getEngines response contains no data')
@@ -44,9 +47,12 @@ export async function getBaseModels() {
 		return undefined
 	}
 	try {
-		const response = await this.queue.add(async () => {
-			return await this.axios.get('/base_models')
-		})
+		const response = await this.queue.add(
+			async () => {
+				return await this.axios.get('/base_models')
+			},
+			{ priority: 1 },
+		)
 		this.logResponse(response)
 		if (response.data === undefined) {
 			this.log('warn', 'getBaseModels response contains no data')
@@ -76,9 +82,12 @@ export async function getCustomModels() {
 		return undefined
 	}
 	try {
-		const response = await this.queue.add(async () => {
-			return await this.axios.get('/models/v3')
-		})
+		const response = await this.queue.add(
+			async () => {
+				return await this.axios.get('/models/v3')
+			},
+			{ priority: 1 },
+		)
 		this.logResponse(response)
 		if (response.data === undefined) {
 			this.log('warn', 'getCustomModels response contains no data')
@@ -108,9 +117,12 @@ export async function getInstances() {
 		return undefined
 	}
 	try {
-		const response = await this.queue.add(async () => {
-			return await this.axios.get('/live/v2/instances', { params: { get_history: 0 } })
-		})
+		const response = await this.queue.add(
+			async () => {
+				return await this.axios.get('/live/v2/instances', { params: { get_history: 0 } })
+			},
+			{ priority: 1 },
+		)
 		this.logResponse(response)
 		if (response.data === undefined) {
 			this.log('warn', 'getInstances response contains no data')
