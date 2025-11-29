@@ -98,7 +98,7 @@ class LexiLive extends InstanceBase {
 	}
 
 	async pollStatus() {
-		if (this.queue.size < 10) {
+		if (this.queue.size <= 100) {
 			await this.getInstances()
 		}
 		this.pollTimer = setTimeout(() => {
@@ -113,14 +113,14 @@ class LexiLive extends InstanceBase {
 		if (this.axios) {
 			delete this.axios
 		}
-		if (this.config.user && this.config.password) {
+		if (this.config.user && this.secrets.password) {
 			this.axios = axios.create({
 				baseURL: api_endpoint,
 				timeout: api_timeOut,
 				headers: api_headers,
 				auth: {
 					username: this.config.user,
-					password: this.config.password,
+					password: this.secrets.password,
 				},
 			})
 			await this.updateInstanceList()
@@ -147,8 +147,8 @@ class LexiLive extends InstanceBase {
 		}
 	}
 
-	async init(config) {
-		this.configUpdated(config).catch(()=>{})
+	async init(config, _isFirstInit, secrets) {
+		this.configUpdated(config, secrets).catch(()=>{})
 	}
 
 	// When module gets deleted
@@ -167,11 +167,12 @@ class LexiLive extends InstanceBase {
 		}
 	}
 
-	async configUpdated(config) {
+	async configUpdated(config, secrets) {
 		this.checkStatus(InstanceStatus.Connecting)
 		this.queue.clear()
 		this.initLexi()
 		this.config = config
+		this.secrets = secrets
 		this.setupAxios()
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
