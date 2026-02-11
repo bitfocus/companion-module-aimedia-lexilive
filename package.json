@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@companion-module/base": "~1.13.5",
-		"axios": "^1.13.2",
+		"axios": "^1.13.5",
 		"lodash": "^4.17.23",
 		"p-queue": "^9.0.1"
 	},
